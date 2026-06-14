@@ -13,23 +13,19 @@
   --trip:#993C1D;--trip-bg:#FAECE7;--trip-border:#F0997B;--trip-dark:#712B13;
   --vehicle:#185FA5;--vehicle-bg:#E6F1FB;--vehicle-border:#85B7EB;--vehicle-dark:#0C447C;
   --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E3DC;--text:#1A1A18;--muted:#6B6B66;--subtle:#9E9D98;
-  --green:#0F6E56;--green-bg:#E1F5EE;--yellow:#7A5C00;--yellow-bg:#FEF3C7;
-  --red:#993C1D;--red-bg:#FAECE7;--blue:#185FA5;--blue-bg:#E6F1FB;
+  --tag:#7C3AED;--tag-bg:#F3EFFE;--tag-border:#C4A8F5;--tag-dark:#5B21B6;
+  --trait:#7A5C00;--trait-bg:#FEF3C7;--trait-border:#F6D860;--trait-dark:#5A4300;
 }
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
 
-/* HEADER */
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:48px;z-index:100}
 .header-logo{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center}
 .header-logo span{color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
-.header h1{font-size:16px;font-weight:600;color:var(--text)}
+.header h1{font-size:16px;font-weight:600}
 .header p{font-size:12px;color:var(--muted);margin-top:1px}
 
-/* LAYOUT */
 .container{max-width:1100px;margin:0 auto;padding:32px 24px}
-
-/* SECTION LABEL */
 .section-label{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--subtle);text-transform:uppercase;margin-bottom:12px}
 
 /* ENTITY CARDS */
@@ -42,40 +38,57 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .entity-card[data-entity="trip"]{--c:var(--trip);--cbg:var(--trip-bg)}
 .entity-card[data-entity="vehicle"]{--c:var(--vehicle);--cbg:var(--vehicle-bg)}
 .entity-icon{width:32px;height:32px;border-radius:8px;background:var(--cbg);border:1px solid var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px}
-.entity-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.entity-name{font-size:13px;font-weight:600;margin-bottom:3px}
 .entity-sub{font-size:11px;color:var(--muted);line-height:1.4}
 
-/* ENTITY DETAIL PANEL */
-.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:8px;min-height:200px}
-.detail-panel h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px}
+/* DETAIL PANEL */
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:8px;min-height:220px}
+.detail-panel h3{font-size:13px;font-weight:600;margin-bottom:12px}
 .attrs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
 .attr-pill{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid;font-weight:500}
 .attr-pill.rider{background:var(--rider-bg);color:var(--rider-dark);border-color:var(--rider-border)}
 .attr-pill.driver{background:var(--driver-bg);color:var(--driver-dark);border-color:var(--driver-border)}
 .attr-pill.trip{background:var(--trip-bg);color:var(--trip-dark);border-color:var(--trip-border)}
 .attr-pill.vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark);border-color:var(--vehicle-border)}
+.attr-pill.tag{background:var(--tag-bg);color:var(--tag-dark);border-color:var(--tag-border)}
+.attr-pill.trait{background:var(--trait-bg);color:var(--trait-dark);border-color:var(--trait-border)}
 .rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .rule-item{display:flex;gap:8px;font-size:12px;color:var(--muted);line-height:1.5;align-items:flex-start}
 .rule-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.rule-dot.rider{background:var(--rider)}
-.rule-dot.driver{background:var(--driver)}
-.rule-dot.trip{background:var(--trip)}
-.rule-dot.vehicle{background:var(--vehicle)}
+.rule-dot.rider{background:var(--rider)}.rule-dot.driver{background:var(--driver)}
+.rule-dot.trip{background:var(--trip)}.rule-dot.vehicle{background:var(--vehicle)}
 
-/* DIVIDER */
+/* TAG / TRAIT section */
+.tt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.tt-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px}
+.tt-card.tag-card{border-color:var(--tag-border);background:var(--tag-bg)}
+.tt-card.trait-card{border-color:var(--trait-border);background:var(--trait-bg)}
+.tt-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.tt-card.tag-card .tt-label{color:var(--tag-dark)}
+.tt-card.trait-card .tt-label{color:var(--trait-dark)}
+.tt-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.tt-card.tag-card .tt-name{color:var(--tag-dark)}
+.tt-card.trait-card .tt-name{color:var(--trait-dark)}
+.tt-def{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+.tt-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.tt-row:last-child{border-bottom:none}
+.tt-row-label{color:var(--muted);font-weight:500}
+.tt-row-value{font-weight:600}
+.tt-card.tag-card .tt-row-value{color:var(--tag-dark)}
+.tt-card.trait-card .tt-row-value{color:var(--trait-dark)}
+.tt-examples{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag-pill{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--tag-bg);color:var(--tag-dark);border:1px solid var(--tag-border);font-weight:500}
+.trait-pill{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--trait-bg);color:var(--trait-dark);border:1px solid var(--trait-border);font-weight:600;font-family:'DM Mono',monospace}
+
+/* DIVIDER / TABS */
 .divider{height:1px;background:var(--border);margin:24px 0}
-
-/* TABS */
-.tab-row{display:flex;gap:4px;margin-bottom:16px}
+.tab-row{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
 .tab{font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;font-family:'DM Sans',sans-serif}
 .tab:hover{background:var(--surface);color:var(--text)}
 .tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+.panel{display:none}.panel.visible{display:block}
 
-/* PANELS */
-.panel{display:none}
-.panel.visible{display:block}
-
-/* ALGO STEPS */
+/* ALGO */
 .algo-steps{display:flex;flex-direction:column}
 .step-wrap{display:flex;flex-direction:column}
 .algo-step{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .1s}
@@ -87,7 +100,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .step-num.s-vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark)}
 .step-num.s-match{background:#F1EFE8;color:#444}
 .step-body{flex:1}
-.step-label{font-size:13px;font-weight:600;color:var(--text)}
+.step-label{font-size:13px;font-weight:600}
 .step-desc{font-size:12px;color:var(--muted);margin-top:2px}
 .step-checks{display:none;flex-wrap:wrap;gap:5px;margin-top:8px}
 .step-checks.open{display:flex}
@@ -97,7 +110,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* INTERACTIONS */
 .int-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .int-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-.int-pair{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.int-pair{font-size:12px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .int-arrow{font-size:10px;color:var(--subtle)}
 .int-rule{font-size:12px;color:var(--muted);line-height:1.5}
 
@@ -105,29 +118,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .gaps-list{display:flex;flex-direction:column;gap:8px}
 .gap-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
 .gap-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.gap-label{font-size:13px;font-weight:500;color:var(--text)}
+.gap-label{font-size:13px;font-weight:500}
 .gap-detail{font-size:12px;color:var(--muted);line-height:1.5}
-
-/* BADGES */
 .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:.03em;text-transform:uppercase}
 .badge.rider{background:var(--rider-bg);color:var(--rider-dark)}
 .badge.driver{background:var(--driver-bg);color:var(--driver-dark)}
 .badge.trip{background:var(--trip-bg);color:var(--trip-dark)}
 .badge.vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark)}
-.badge.high{background:var(--red-bg);color:var(--red)}
-.badge.medium{background:var(--yellow-bg);color:var(--yellow)}
-.badge.low{background:var(--blue-bg);color:var(--blue)}
-
-/* WARNING BOX */
-.warn-box{background:var(--red-bg);border:1px solid var(--trip-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--trip-dark);line-height:1.5}
-
-/* NOTE BOX */
-.note-box{background:var(--blue-bg);border:1px solid var(--vehicle-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--vehicle-dark);line-height:1.5}
+.badge.high{background:var(--trip-bg);color:var(--trip-dark)}
+.badge.medium{background:var(--trait-bg);color:var(--trait-dark)}
+.badge.low{background:var(--vehicle-bg);color:var(--vehicle-dark)}
+.warn-box{background:var(--trip-bg);border:1px solid var(--trip-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--trip-dark);line-height:1.5}
+.note-box{background:var(--vehicle-bg);border:1px solid var(--vehicle-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--vehicle-dark);line-height:1.5}
 
 @media(max-width:700px){
-  .entity-grid{grid-template-columns:1fr 1fr}
-  .rules-grid{grid-template-columns:1fr}
-  .int-grid{grid-template-columns:1fr}
+  .entity-grid,.tt-grid{grid-template-columns:1fr 1fr}
+  .rules-grid,.int-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -140,24 +146,61 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <a href="index.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent">Index</a>
   <a href="dispatching-framework.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:#fff;text-decoration:none;white-space:nowrap;border-bottom:2px solid #fff;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#534AB7;flex-shrink:0"></span>Dispatching Framework</a>
+  <a href="admin-panel.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#993C1D;flex-shrink:0"></span>Admin Panel</a>
   <a href="platform-architecture.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>Platform Architecture</a>
   <a href="dispatch-engine.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#0F6E56;flex-shrink:0"></span>Dispatch Engine</a>
   <a href="booking-types.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#185FA5;flex-shrink:0"></span>Booking Types</a>
 </nav>
 
-
 <div class="header">
   <div class="header-logo"><span>LCE</span></div>
   <div>
     <h1>Dispatching Framework</h1>
-    <p>Rider · Driver · Trip · Vehicle — Business Rules & Dispatching Logic</p>
+    <p>Rider · Driver · Trip · Vehicle · Tags · Traits — Business Rules & Dispatching Logic</p>
   </div>
 </div>
 
 <div class="container">
 
-  <div class="section-label">Core entities — click to explore</div>
+  <!-- TAG / TRAIT MODEL -->
+  <div class="section-label">Segmentation model</div>
+  <div class="tt-grid" style="margin-bottom:28px">
+    <div class="tt-card tag-card">
+      <div class="tt-label">Tag</div>
+      <div class="tt-name">Label / Category</div>
+      <div class="tt-def">A keyword assigned to an entity for grouping and filtering. Ops-managed. Added or removed without touching the entity record itself.</div>
+      <div class="tt-row"><span class="tt-row-label">Format</span><span class="tt-row-value">Keyword</span></div>
+      <div class="tt-row"><span class="tt-row-label">Used for</span><span class="tt-row-value">Grouping · Filtering · Demand routing</span></div>
+      <div class="tt-row"><span class="tt-row-label">Changes</span><span class="tt-row-value">Added / removed easily by ops</span></div>
+      <div class="tt-row"><span class="tt-row-label">Engine use</span><span class="tt-row-value">Which supply pool does this request draw from</span></div>
+      <div class="tt-examples">
+        <span class="tag-pill">VIP</span>
+        <span class="tag-pill">Airport Certified</span>
+        <span class="tag-pill">Premium</span>
+        <span class="tag-pill">City-to-City</span>
+        <span class="tag-pill">EV Fleet</span>
+      </div>
+    </div>
+    <div class="tt-card trait-card">
+      <div class="tt-label">Trait</div>
+      <div class="tt-name">User Attribute / Property</div>
+      <div class="tt-def">A key-value pair that is an intrinsic, verifiable property of the entity. Updated based on data. Typed — the data type determines how it is stored, validated, and rendered.</div>
+      <div class="tt-row"><span class="tt-row-label">Format</span><span class="tt-row-value">Key = Value pair</span></div>
+      <div class="tt-row"><span class="tt-row-label">Used for</span><span class="tt-row-value">Personalization · Segmentation · Hard filters</span></div>
+      <div class="tt-row"><span class="tt-row-label">Changes</span><span class="tt-row-value">Updated based on user / entity data</span></div>
+      <div class="tt-row"><span class="tt-row-label">Data types</span><span class="tt-row-value">boolean · enum · multi-select · numeric · date</span></div>
+      <div class="tt-examples">
+        <span class="trait-pill">total_rides = 847</span>
+        <span class="trait-pill">rating = 4.8</span>
+        <span class="trait-pill">languages = [AR, EN]</span>
+        <span class="trait-pill">has_ramp = true</span>
+        <span class="trait-pill">permit_expiry = 2027-03</span>
+      </div>
+    </div>
+  </div>
 
+  <!-- ENTITIES -->
+  <div class="section-label">Core entities — click to explore</div>
   <div class="entity-grid" id="entity-grid">
     <div class="entity-card active" data-entity="rider" onclick="selectEntity('rider')">
       <div class="entity-icon">🧑</div>
@@ -180,7 +223,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="entity-sub">The asset assigned to a driver</div>
     </div>
   </div>
-
   <div class="detail-panel" id="detail-panel"></div>
 
   <div class="divider"></div>
@@ -192,14 +234,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <div id="tab-algo" class="panel visible">
-    <div class="note-box">The auto-assignment engine runs these 9 checks in strict order. A driver is eliminated the moment any single check fails. Click any step to expand the checks inside it.</div>
+    <div class="note-box">The dispatch engine runs these checks against every <strong>duty</strong> (driver × vehicle shift pairing) in strict order. A duty is eliminated the moment any single check fails. Click any step to expand.</div>
     <div class="algo-steps" id="algo-steps"></div>
   </div>
-
   <div id="tab-interactions" class="panel">
     <div class="int-grid" id="interactions"></div>
   </div>
-
   <div id="tab-gaps" class="panel">
     <div class="warn-box">These gaps cannot be answered from the current blueprints. Each one needs a direct answer from the Tech Manager or operations team before the relevant module can be fully specified.</div>
     <div class="gaps-list" id="gaps-list"></div>
@@ -210,50 +250,58 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <script>
 const entities = {
   rider:{
-    attrs:['Customer ID','Mobile number','Payment method','Credit card token (Payfort)','Balance / due amount','Voucher applied','Corporate account flag','Trip history','Loyalty points','Subscription bundle'],
-    rules:['Pickup and dropoff must be within service area','Outstanding due amount blocks new booking creation','Only one voucher allowed per trip','Minimum 60 minutes lead time for scheduled trips','Corporate riders default to Invoice payment method','New customers may receive auto-popup voucher','Referral codes validated separately from vouchers','Account deletion flags record — does not purge data']
+    attrs:['Customer ID','Mobile number','Payment method','Card token (Payfort)','Credit balance','Voucher applied','Corporate account flag','Trip history','Loyalty points','Subscription bundle'],
+    tags:['VIP','Corporate','Frequent Rider','New Customer','Subscription Active'],
+    traits:['total_rides = 847','rating_given_avg = 4.6','preferred_language = AR','subscription_tier = Gold','credit_balance = 250 EGP'],
+    rules:['Pickup and dropoff must be within service area','Outstanding balance blocks new booking creation','Only one voucher allowed per trip','Corporate riders default to Invoice payment method','New customers may receive auto-popup voucher','Referral codes validated separately from vouchers','Account deletion flags record — does not purge data','Subscription state loaded at identity resolution (Opening state)']
   },
   driver:{
-    attrs:['Driver ID','SAP ID','Shift type (DateTime / Date / Time / Recurring)','Availability flag','Vacation status','Day-off setting','Active trip status','GPS location (Firebase)','Check-in status','Load balance score'],
-    rules:['Must be in active shift at time of pickup','Availability flag must equal 1 for assignment','Vacation table checked before every assignment run','GPS location must be fresher than 10 minutes','Cannot hold two active trips simultaneously','Airport zone: only airport trips within 30-min window','Absence = available + not attended + no vacation + no day-off','Round-trip return legs locked to same driver']
+    attrs:['Driver ID','SAP ID','Hub','Shift pattern','Availability flag','Vacation / day-off status','Active trip status','GPS location','Check-in status','Duty assignment'],
+    tags:['Airport Certified','City-to-City','Premium','EV Trained','VIP Driver'],
+    traits:['total_rides = 3420','rating = 4.8','languages = [Arabic, English]','has_airport_permit = true','permit_expiry = 2027-03','license_type = B','city_to_city_eligible = true'],
+    rules:['Must be in active shift and assigned to a duty at time of pickup','Availability flag must equal 1 for assignment','Vacation and day-off checked before every roster assignment','GPS location must be fresher than ETA safety buffer','Cannot hold two active trips simultaneously','Airport zone: vehicle + driver must both hold airport pass','Tags determine which demand segments the driver can serve','Traits drive hard feasibility filter checks in dispatch engine']
   },
   trip:{
-    attrs:['Ticket ID','Trip type','Service type (car category)','Pickup area','Dropoff area','Scheduled time','Fare — estimated and actual','Payment status','Status lifecycle','Surge factor','Source channel','Number of cabs'],
-    rules:['Status flow: Opened → Assigned → ToCustomer → OnTheWay → Closed','Lost Business when no eligible driver found — silent failure','Surge recalculated hourly for next 48 hours','Airport trips use fixed price list per area','Round trips auto-link second leg to same driver','Multi-cab trips create separate tickets per cab','Cancellation fee applies after driver is assigned','Book-Now requests carry an expiry timer']
+    attrs:['Ticket ID','Trip type (1-Way / Round / Hourly / C2C)','Service type (car category)','Pickup area','Dropoff area','Scheduled time','Fare — estimated and actual','Payment status','Status lifecycle','Surge factor','Booking channel','Number of cabs'],
+    tags:['Airport','Corporate','VIP','Peak Hour','Promotional'],
+    traits:['booking_type = Hourly','duration_hours = 4','city_to_city = true','requires_ramp = false','payment_method = Card'],
+    rules:['Status: REQUESTED → PAID → CONFIRMED → ASSIGNED → EN ROUTE → IN TRIP → COMPLETED','ON HOLD when capacity full — auto-promotes when slot frees (15 min re-confirm)','Lost Business declared after retry window — ops alerted','Surge recalculated hourly for next 48 hours','Airport trips: both vehicle and driver must hold airport pass','Hourly: exclusive block, no insertions, Pass 2 re-opt only','City-to-city: driver + vehicle bound for full duty, return leg required','Cancellation allowed up to 1 hour before pickup']
   },
   vehicle:{
-    attrs:['Car ID','Car type / service type','License plate','Assigned driver','Wheelchair ramp flag','Operational status','GPS device ID','Maintenance flag','Outsourced flag'],
-    rules:['Car type determines the price factor multiplier','Ramp option only available on specific car types','Outsourced cars (e.g. Sixt) tracked separately','Vehicle must not be in maintenance status','One vehicle assigned per driver per shift','Car type availability checked per location and time','SkyCab is a distinct service type (Air Taxi)','Shuttle Bus treated as a separate car category']
+    attrs:['Vehicle ID','Asset ID (→ SAP)','Make / model / year','Engine type (EV / ICE)','Category','VIN','License plate','Permits','Color','Capacity','Hub assignment','Shift pattern'],
+    tags:['Wheelchair Accessible','EV','Premium Fleet','Airport Permitted','City-to-City'],
+    traits:['passenger_capacity = 4','battery_range_km = 420','has_ramp = true','year = 2023','color = Black','upholstery = Leather','has_airport_permit = true','permit_expiry = 2027-06'],
+    rules:['Vehicle runs two 10-hour shifts per day with 2-hour hard gap (cleaning/inspection)','Hub is the matching key — driver and vehicle must share the same hub','Car category determines which service types and demand segments are eligible','Ramp trait required for accessibility requests — hard filter','EV: battery ≥ full route + 20% reserve required before assignment','Permit expiry checked at roster lock and at dispatch filter','One vehicle per driver per duty — never shared across duties simultaneously','Vehicle operability table determines local trip eligibility after city-to-city dropoff']
   }
 };
 
 const algoSteps=[
-  {num:'1',cls:'s-rider',label:'Rider eligibility',desc:'Validates the requesting customer before any driver lookup begins.',checks:['In service area (geofence)','No outstanding balance','Account not locked','Min 60 min lead time']},
-  {num:'2',cls:'s-trip',label:'Trip classification',desc:'Determines pricing bucket and which driver pool to target.',checks:['Trip type (Safe Ride / Airport / Limo)','Service type (car category)','Surge window applied','Fixed vs distance-based pricing']},
-  {num:'3',cls:'s-driver',label:'Driver pool build',desc:'Pulls all drivers who pass baseline availability checks.',checks:['Active shift confirmed','Availability = 1','Not on vacation','No day-off conflict']},
-  {num:'4',cls:'s-driver',label:'Busy filter',desc:'Removes drivers already holding an active trip.',checks:['No Standby trips','No Assigned trips','No OnTheWay trips','No Opened / ToCustomer / Waiting trips']},
-  {num:'5',cls:'s-vehicle',label:'Vehicle match',desc:"Ensures the driver's vehicle fits the trip's service type requirement.",checks:['Car type = requested service type','Not in maintenance','Ramp if required by trip']},
-  {num:'6',cls:'s-match',label:'Location scoring',desc:'Scores remaining drivers by proximity and applies zone rules.',checks:['Firebase GPS < 10 min old','Google Maps distance/time scoring','Airport zone: 30-min window only','Load balance tiebreaker']},
-  {num:'7',cls:'s-trip',label:'Pre-assignment check',desc:'Honors any manual pre-assignment before auto-assign proceeds.',checks:['Pre-assigned driver checked first','Auto-assign skipped if pre-assigned']},
-  {num:'8',cls:'s-match',label:'Assignment and notify',desc:'Writes assignment and pushes notification to driver app.',checks:['Ticket status → Assigned','FCM push to driver app','Log to TicketDriverAssignmentLog','Firebase node synced']},
-  {num:'9',cls:'s-trip',label:'No match outcome',desc:'Silent failure path when no driver passes all checks.',checks:['Status → LostBusiness','No customer notification','No auto-retry','⚠️ Retry count unknown — open gap']}
+  {num:'1',cls:'s-rider',label:'Rider eligibility',desc:'Validates the requesting customer before any duty lookup begins.',checks:['In service area (geofence)','No outstanding balance','Account not locked','Payment token verified','Subscription state loaded']},
+  {num:'2',cls:'s-trip',label:'Trip classification',desc:'Determines booking type, pricing bucket, and which supply segment to target.',checks:['Booking type: 1-Way / Round / Hourly / C2C','Service type (car category)','Surge window applied','Tags on trip determine eligible supply pool']},
+  {num:'3',cls:'s-driver',label:'Duty pool build',desc:'Pulls all duties (driver × vehicle) passing baseline availability checks.',checks:['Active shift confirmed','Driver availability = 1','No day-off conflict','No vacation record','Hub match confirmed']},
+  {num:'4',cls:'s-driver',label:'Hard feasibility filters',desc:'Binary checks — any failure eliminates the duty entirely.',checks:['ETA ≤ pickup + max lateness (5 min)','Shift end + OT ≥ estimated dropoff','Vehicle type matches requested category','Ramp trait if accessibility required','Airport pass trait (vehicle + driver) if airport trip','City-to-city eligibility trait if C2C','Battery ≥ route + 20% reserve (EV only)']},
+  {num:'5',cls:'s-vehicle',label:'Tag matching',desc:'Confirms the duty\'s tags satisfy the demand segment requirements.',checks:['Driver tags ⊇ trip demand tags','Vehicle tags ⊇ trip vehicle requirements','VIP tag match if VIP trip','Airport tag confirmed for airport demand']},
+  {num:'6',cls:'s-match',label:'Cost scoring',desc:'Every passing duty scored on 8-term cost function. Lowest cost wins.',checks:['Dead km to pickup','Downstream dead km × weight','Overtime cost','− Idle minutes filled','Lateness penalty','− Home base return credit','End-of-shift repositioning cost','Churn penalty (re-opt only)']},
+  {num:'7',cls:'s-trip',label:'Assignment & notify',desc:'Writes assignment and pushes notification to driver app.',checks:['Ticket status → Assigned','Push notification to driver','Log to assignment log','Firebase node synced','ON HOLD bookings re-evaluated']},
+  {num:'8',cls:'s-trip',label:'No match outcome',desc:'When no duty passes all checks after retry window.',checks:['Re-optimisation retried up to threshold','Status → Lost Business if no match','Ops alert raised','ON HOLD waitlist checked']}
 ];
 
 const interactions=[
-  {pair:['Rider','Trip'],arrow:'→',rule:'Rider creates the trip. Due amount or block status prevents creation. Voucher and payment method travel with the trip.'},
-  {pair:['Trip','Driver'],arrow:'↔',rule:'Trip is matched to driver by the algorithm. Driver accepts via app status update. Round-trip second leg locked to same driver.'},
-  {pair:['Driver','Vehicle'],arrow:'↔',rule:'One vehicle per driver per shift. Vehicle car type determines which service types the driver can fulfill.'},
-  {pair:['Vehicle','Trip'],arrow:'→',rule:'Vehicle car type sets the price factor multiplier. Ramp requirement on trip must match vehicle capability.'},
-  {pair:['Rider','Driver'],arrow:'↔',rule:'Rating exchanged after trip closes. Rider rates driver. Driver can flag No-Show. Tips flow from rider to driver record.'},
-  {pair:['Trip','Vehicle'],arrow:'→',rule:'Trip service type constrains eligible vehicles. Airport trips restrict to drivers in airport zone within 30 minutes.'}
+  {pair:['Rider','Trip'],arrow:'→',rule:'Rider creates the trip. Due amount or block status prevents creation. Voucher, payment method, and rider tags travel with the trip to the matching engine.'},
+  {pair:['Trip','Duty'],arrow:'↔',rule:'Trip is matched to a duty (driver × vehicle) by the engine. Tags on the trip determine the eligible duty pool. Traits drive hard filter checks.'},
+  {pair:['Driver','Vehicle'],arrow:'↔',rule:'One vehicle per driver per duty. Hub is the matching key — cross-hub assignment never happens automatically. Vehicle traits determine which trips can be served.'},
+  {pair:['Vehicle','Trip'],arrow:'→',rule:'Vehicle category and traits constrain eligible trips. Ramp trait must match trip accessibility requirement. Airport permit trait gates airport trips.'},
+  {pair:['Rider','Driver'],arrow:'↔',rule:'Rating exchanged after trip closes. Rider rates driver. Driver can flag No-Show. Tips flow from rider to driver record. Both ratings update traits.'},
+  {pair:['Tags','Engine'],arrow:'→',rule:'Driver and vehicle tags determine which demand segments they enter. Trip tags filter the duty pool before cost scoring runs. Tags are the supply-demand bridge.'}
 ];
 
 const gaps=[
-  {entity:'trip',priority:'high',label:'Retry count before Lost Business',detail:'Blueprint confirms silent failure but does not document how many assignment retry passes run before the trip is abandoned. Needs Tech Manager answer.'},
-  {entity:'driver',priority:'high',label:'Absence vs Availability=0 in dispatching',detail:'Absence is detectable (available + not attended + no vacation + no day-off). Whether absence is treated differently from Availability=0 during auto-assign is unclear.'},
-  {entity:'trip',priority:'high',label:'Book-Now expiry behavior',detail:'Expiry timer confirmed. What happens when it expires — silent cancel or Lost Business — is not documented.'},
-  {entity:'vehicle',priority:'medium',label:'Outsourced car assignment logic',detail:'Outsourced cars appear as a service type. Whether they enter the auto-assign pool or are always manually assigned is not confirmed.'},
-  {entity:'rider',priority:'medium',label:'Multi-cab payment: per ticket or bundle',detail:'Multiple cabs create multiple tickets. Whether payment is pre-authorised per ticket or as a bundle at booking time needs confirmation.'}
+  {entity:'trip',priority:'high',label:'Retry count before Lost Business',detail:'Engine confirms retry logic exists but the exact count and window before Lost Business is declared needs confirmation from Tech Manager.'},
+  {entity:'driver',priority:'high',label:'Absence vs Availability=0 in dispatching',detail:'Absence (available + not attended + no vacation + no day-off) — whether treated differently from Availability=0 during duty pool build is unclear.'},
+  {entity:'trip',priority:'high',label:'Book-Now expiry behavior',detail:'TTL timer confirmed. What happens on expiry — silent cancel or Lost Business — is not documented.'},
+  {entity:'vehicle',priority:'medium',label:'Outsourced vehicle assignment logic',detail:'Outsourced vehicles (e.g. Sixt) are a separate category. Whether they enter the auto-assign duty pool or are always manually assigned is not confirmed.'},
+  {entity:'rider',priority:'medium',label:'Multi-cab payment: per ticket or bundle',detail:'Multiple cabs create multiple tickets. Whether payment is pre-authorised per ticket or as a bundle at booking time needs confirmation.'},
+  {entity:'driver',priority:'medium',label:'Tag vs Trait for Airport Pass',detail:'Airport pass could be a Tag (Airport Certified) or a Trait (has_airport_permit = true). Needs decision: if it expires, it must be a Trait with a date type.'}
 ];
 
 let currentEntity='rider';
@@ -269,10 +317,24 @@ function selectEntity(e){
 function renderDetail(e){
   const d=entities[e];
   const attrHtml=d.attrs.map(a=>`<span class="attr-pill ${e}">${a}</span>`).join('');
+  const tagHtml=d.tags.map(t=>`<span class="attr-pill tag">${t}</span>`).join('');
+  const traitHtml=d.traits.map(t=>`<span class="attr-pill trait">${t}</span>`).join('');
   const rulesHtml=d.rules.map(r=>`<div class="rule-item"><span class="rule-dot ${e}"></span><span>${r}</span></div>`).join('');
   document.getElementById('detail-panel').innerHTML=`
-    <h3>${e.charAt(0).toUpperCase()+e.slice(1)} — attributes &amp; business rules</h3>
-    <div class="attrs">${attrHtml}</div>
+    <h3>${e.charAt(0).toUpperCase()+e.slice(1)} — attributes, tags, traits &amp; rules</h3>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);margin-bottom:6px">Fields</div>
+    <div class="attrs" style="margin-bottom:12px">${attrHtml}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tag-dark);margin-bottom:6px">Tags (segmentation labels)</div>
+        <div class="attrs" style="margin-bottom:0">${tagHtml}</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--trait-dark);margin-bottom:6px">Traits (key-value attributes)</div>
+        <div class="attrs" style="margin-bottom:0">${traitHtml}</div>
+      </div>
+    </div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px">Business rules</div>
     <div class="rules-grid">${rulesHtml}</div>`;
 }
 
@@ -291,15 +353,12 @@ function renderAlgo(){
     </div>`).join('');
 }
 
-function toggleStep(i){
-  const el=document.getElementById(`checks-${i}`);
-  el.classList.toggle('open');
-}
+function toggleStep(i){document.getElementById(`checks-${i}`).classList.toggle('open')}
 
 function renderInteractions(){
   document.getElementById('interactions').innerHTML=interactions.map(x=>`
     <div class="int-card">
-      <div class="int-pair"><span>${x.pair[0]}</span><span class="int-arrow">${x.arrow}</span><span>${x.pair[1]}</span></div>
+      <div class="int-pair"><span>${x.pair[0]}</span><span class="int-arrow">↔</span><span>${x.pair[1]}</span></div>
       <div class="int-rule">${x.rule}</div>
     </div>`).join('');
 }
