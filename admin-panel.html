@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCE Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E3DC;--text:#1A1A18;--muted:#6B6B66;--subtle:#B0AFA9;
+  --s1:#1A1A18;--s1-bg:#EEECEA;
+  --s2:#185FA5;--s2-bg:#E6F1FB;--s2-border:#85B7EB;--s2-dark:#0C447C;
+  --s3:#7C3AED;--s3-bg:#F3EFFE;--s3-border:#C4A8F5;--s3-dark:#5B21B6;
+  --s4:#0F6E56;--s4-bg:#E1F5EE;--s4-border:#5DCAA5;--s4-dark:#085041;
+  --s5:#993C1D;--s5-bg:#FAECE7;--s5-border:#F0997B;--s5-dark:#712B13;
+  --s6:#7A5C00;--s6-bg:#FEF3C7;--s6-border:#F6D860;--s6-dark:#5A4300;
+  --tag:#7C3AED;--tag-bg:#F3EFFE;--tag-border:#C4A8F5;--tag-dark:#5B21B6;
+  --trait:#7A5C00;--trait-bg:#FEF3C7;--trait-border:#F6D860;--trait-dark:#5A4300;
+  --wf-bg:#F0EEF8;--wf-border:#C4C0E8;--wf-input:#fff;--wf-btn:#534AB7;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;display:flex;min-height:100vh;flex-direction:column}
+
+/* GLOBAL NAV */
+.gnav{background:#1A1A18;padding:0 24px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:400;gap:0;flex-shrink:0}
+.gnav-logo{display:flex;align-items:center;gap:8px;padding:10px 16px 10px 0;margin-right:4px;border-right:1px solid rgba(255,255,255,.15);flex-shrink:0}
+.gnav-logo span{color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:5px}
+.gnav-logo p{color:rgba(255,255,255,.5);font-size:11px}
+.gnav a{padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px}
+.gnav a.active{color:#fff;border-bottom-color:#fff}
+.gnav-dot{width:6px;height:6px;border-radius:50%}
+
+/* SHELL */
+.shell{display:flex;flex:1;overflow:hidden}
+
+/* LEFT SIDEBAR */
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;position:sticky;top:48px;height:calc(100vh - 48px)}
+.sidebar-section{padding:16px 12px 8px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--subtle)}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-radius:8px;margin:1px 6px;transition:all .12s;border:none;background:none;width:calc(100% - 12px);text-align:left}
+.sidebar-item:hover{background:var(--bg);color:var(--text)}
+.sidebar-item.active{background:var(--s1-bg);color:var(--text);font-weight:600}
+.sidebar-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:28px 32px}
+.module{display:none}.module.active{display:block}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-eyebrow{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);margin-bottom:6px}
+.page-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:580px}
+
+/* WIREFRAME */
+.wf-wrap{background:var(--wf-bg);border:1.5px solid var(--wf-border);border-radius:14px;padding:20px;margin-bottom:24px;overflow-x:auto}
+.wf-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--s3-dark);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.wf-label::before{content:'';display:block;width:8px;height:8px;border-radius:50%;background:var(--s3)}
+
+/* WIREFRAME ELEMENTS */
+.wf-toolbar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #D5D2E8;border-radius:8px;padding:8px 12px;margin-bottom:12px;flex-wrap:wrap}
+.wf-search{flex:1;min-width:140px;height:30px;background:#F7F6FB;border:1px solid #D5D2E8;border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:11px;color:var(--muted)}
+.wf-btn{height:30px;padding:0 12px;border-radius:6px;font-size:11px;font-weight:600;border:none;cursor:pointer;white-space:nowrap}
+.wf-btn.primary{background:var(--wf-btn);color:#fff}
+.wf-btn.secondary{background:#fff;border:1px solid #D5D2E8;color:var(--text)}
+.wf-btn.ghost{background:transparent;color:var(--muted);border:1px solid #D5D2E8}
+.wf-filter{height:30px;padding:0 10px;border-radius:6px;font-size:11px;border:1px solid #D5D2E8;background:#fff;color:var(--muted)}
+
+/* TABLE */
+.wf-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #D5D2E8;font-size:11px}
+.wf-table th{background:#F7F6FB;padding:8px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #D5D2E8;white-space:nowrap}
+.wf-table td{padding:9px 12px;border-bottom:1px solid #EEE;vertical-align:middle}
+.wf-table tr:last-child td{border-bottom:none}
+.wf-table tr:hover td{background:#FAFAF8}
+.wf-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.wf-status.active{background:#E1F5EE;color:#085041}
+.wf-status.inactive{background:#EEECEA;color:#6B6B66}
+.wf-status.open{background:#FEF3C7;color:#5A4300}
+.wf-status.blocked{background:#FAECE7;color:#712B13}
+.wf-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:var(--tag-bg);color:var(--tag-dark);border:1px solid var(--tag-border);margin:1px;font-weight:500}
+.wf-trait{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:var(--trait-bg);color:var(--trait-dark);border:1px solid var(--trait-border);margin:1px;font-family:'DM Mono',monospace}
+.wf-actions{display:flex;gap:4px}
+.wf-action{font-size:10px;padding:2px 8px;border-radius:5px;background:#F7F6FB;border:1px solid #D5D2E8;cursor:pointer;color:var(--muted)}
+
+/* FORM */
+.wf-form{background:#fff;border:1px solid #D5D2E8;border-radius:10px;padding:16px;margin-bottom:12px}
+.wf-form-title{font-size:12px;font-weight:700;margin-bottom:12px;color:var(--text)}
+.wf-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wf-form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.wf-field{display:flex;flex-direction:column;gap:3px}
+.wf-field.full{grid-column:1/-1}
+.wf-field label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.wf-input{height:32px;border:1px solid #D5D2E8;border-radius:6px;padding:0 10px;font-size:11px;background:#FAFAF9;color:var(--text);width:100%}
+.wf-select{height:32px;border:1px solid #D5D2E8;border-radius:6px;padding:0 10px;font-size:11px;background:#FAFAF9;color:var(--muted);width:100%}
+.wf-textarea{height:60px;border:1px solid #D5D2E8;border-radius:6px;padding:8px 10px;font-size:11px;background:#FAFAF9;color:var(--muted);width:100%;resize:none}
+.wf-toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.wf-toggle-box{width:32px;height:18px;border-radius:9px;background:#D5D2E8;position:relative;flex-shrink:0}
+.wf-toggle-box.on{background:var(--s4)}
+.wf-toggle-thumb{width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s}
+.wf-toggle-box.on .wf-toggle-thumb{left:16px}
+.wf-form-footer{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+
+/* MAP PLACEHOLDER */
+.wf-map{height:160px;background:linear-gradient(135deg,#E8EAF0 0%,#D5D8E8 100%);border-radius:8px;border:1px solid #C4C0E8;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin-bottom:10px;position:relative;overflow:hidden}
+.wf-map::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(0,0,0,.03) 20px,rgba(0,0,0,.03) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(0,0,0,.03) 20px,rgba(0,0,0,.03) 21px)}
+.wf-map-label{position:relative;z-index:1;background:rgba(255,255,255,.85);padding:4px 12px;border-radius:20px;border:1px solid #C4C0E8;font-weight:600}
+
+/* STATS ROW */
+.wf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.wf-stat{background:#fff;border:1px solid #D5D2E8;border-radius:8px;padding:10px 12px}
+.wf-stat-val{font-size:20px;font-weight:700;color:var(--text)}
+.wf-stat-label{font-size:10px;color:var(--muted)}
+.wf-stat-delta{font-size:10px;font-weight:600;margin-top:2px}
+.wf-stat-delta.up{color:var(--s4-dark)}
+.wf-stat-delta.down{color:var(--s5-dark)}
+
+/* DETAIL PANEL */
+.wf-detail{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.wf-detail-card{background:#fff;border:1px solid #D5D2E8;border-radius:8px;padding:12px 14px}
+.wf-detail-card h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.wf-detail-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid #F0EEE8}
+.wf-detail-row:last-child{border-bottom:none}
+.wf-detail-key{color:var(--muted)}
+.wf-detail-val{font-weight:500;color:var(--text)}
+
+/* PRICING FORMULA */
+.wf-formula{background:#fff;border:1px solid #D5D2E8;border-radius:8px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;line-height:2;margin-bottom:10px}
+.f-line{display:flex;gap:8px}
+.f-op{width:14px;font-weight:700}
+.f-op.add{color:var(--s5-dark)}
+.f-op.sub{color:var(--s4-dark)}
+.f-var{flex:1}
+.f-var .configurable{color:var(--s2-dark);font-size:9px;margin-left:6px;font-family:'DM Sans',sans-serif;background:var(--s2-bg);padding:1px 6px;border-radius:4px;font-weight:600}
+
+/* SECTION within module */
+.mod-section{margin-bottom:28px}
+.mod-section-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mod-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* OPEN ITEMS */
+.open-item{background:var(--s6-bg);border:1px solid var(--s6-border);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;gap:10px;align-items:flex-start}
+.open-item-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;flex-shrink:0;margin-top:1px}
+.open-item-badge.decision{background:var(--s5-bg);color:var(--s5-dark)}
+.open-item-badge.tbd{background:var(--s6-bg);color:var(--s6-dark);border:1px solid var(--s6-border)}
+.open-item-badge.open{background:var(--s2-bg);color:var(--s2-dark)}
+.open-item-text{font-size:12px;color:var(--text);font-weight:500}
+.open-item-detail{font-size:11px;color:var(--muted);line-height:1.5}
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .wf-stats{grid-template-columns:1fr 1fr}
+  .wf-form-grid{grid-template-columns:1fr}
+  .wf-detail{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav class="gnav">
+  <div class="gnav-logo"><span>LCE</span><p>Framework</p></div>
+  <a href="index.html">Index</a>
+  <a href="dispatching-framework.html" style="display:flex;align-items:center;gap:5px"><span class="gnav-dot" style="background:#534AB7"></span>Dispatching Framework</a>
+  <a href="admin-panel.html" class="active" style="display:flex;align-items:center;gap:5px"><span class="gnav-dot" style="background:#993C1D"></span>Admin Panel</a>
+  <a href="platform-architecture.html" style="display:flex;align-items:center;gap:5px"><span class="gnav-dot" style="background:#7C3AED"></span>Platform Architecture</a>
+  <a href="dispatch-engine.html" style="display:flex;align-items:center;gap:5px"><span class="gnav-dot" style="background:#0F6E56"></span>Dispatch Engine</a>
+  <a href="booking-types.html" style="display:flex;align-items:center;gap:5px"><span class="gnav-dot" style="background:#185FA5"></span>Booking Types</a>
+</nav>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-section">Fleet</div>
+  <button class="sidebar-item active" onclick="showModule('hubs')"><span class="sidebar-dot" style="background:#185FA5"></span>Hub Locations</button>
+  <button class="sidebar-item" onclick="showModule('vehicles')"><span class="sidebar-dot" style="background:#0F6E56"></span>Vehicles</button>
+  <button class="sidebar-item" onclick="showModule('drivers')"><span class="sidebar-dot" style="background:#534AB7"></span>Drivers</button>
+  <div class="sidebar-section">Operations</div>
+  <button class="sidebar-item" onclick="showModule('shifts')"><span class="sidebar-dot" style="background:#993C1D"></span>Shift Management</button>
+  <button class="sidebar-item" onclick="showModule('areas')"><span class="sidebar-dot" style="background:#7C3AED"></span>Areas Management</button>
+  <div class="sidebar-section">Commercial</div>
+  <button class="sidebar-item" onclick="showModule('pricing')"><span class="sidebar-dot" style="background:#7A5C00"></span>Pricing</button>
+  <button class="sidebar-item" onclick="showModule('servicetypes')"><span class="sidebar-dot" style="background:#185FA5"></span>Service Types</button>
+  <div class="sidebar-section">Customers</div>
+  <button class="sidebar-item" onclick="showModule('customers')"><span class="sidebar-dot" style="background:#0F6E56"></span>Customer Management</button>
+  <div class="sidebar-section">Segmentation</div>
+  <button class="sidebar-item" onclick="showModule('tags')"><span class="sidebar-dot" style="background:#7C3AED"></span>Tag Library</button>
+  <button class="sidebar-item" onclick="showModule('traits')"><span class="sidebar-dot" style="background:#7A5C00"></span>Trait Definitions</button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ═══════ HUBS ═══════ -->
+<div id="mod-hubs" class="module active">
+  <div class="page-header">
+    <div class="page-eyebrow">Fleet · Hub Locations</div>
+    <div class="page-title">Hub Locations</div>
+    <div class="page-sub">Define and manage physical hub locations. Each hub has a geofenced radius, assigned fleet, and service capacity. Hubs are the matching key — drivers and vehicles from the same hub are paired into duties.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">List view — all hubs</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search hubs...</div>
+      <select class="wf-filter"><option>All cities</option><option>Cairo</option><option>Alexandria</option><option>Gouna</option></select>
+      <select class="wf-filter"><option>All statuses</option><option>Active</option><option>Inactive</option></select>
+      <button class="wf-btn primary">+ Add Hub</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Hub Name</th><th>City</th><th>Lat / Long</th><th>Radius</th><th>Capacity</th><th>Active Duties</th><th>Services</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cairo HQ</strong></td><td>Cairo</td><td>30.0444, 31.2357</td><td>500 m</td><td>40</td><td>28</td><td>Wash · Maintenance</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></span></td></tr>
+        <tr><td><strong>Gouna Terminal</strong></td><td>Gouna</td><td>27.3947, 33.6773</td><td>300 m</td><td>12</td><td>7</td><td>Wash</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></td></tr>
+        <tr><td><strong>Alex North</strong></td><td>Alexandria</td><td>31.2001, 29.9187</td><td>400 m</td><td>18</td><td>0</td><td>—</td><td><span class="wf-status open">● Setup</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Add / Edit hub</div>
+    <div class="wf-map"><span class="wf-map-label">🗺 Map — click to place hub centre + draw radius</span></div>
+    <div class="wf-form">
+      <div class="wf-form-title">Hub details</div>
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>Hub Name</label><input class="wf-input" placeholder="e.g. Cairo HQ" readonly></div>
+        <div class="wf-field"><label>City</label><select class="wf-select"><option>Cairo</option><option>Alexandria</option><option>Gouna</option></select></div>
+        <div class="wf-field"><label>Radius (metres)</label><input class="wf-input" placeholder="500" readonly></div>
+        <div class="wf-field"><label>Latitude</label><input class="wf-input" placeholder="30.0444" readonly></div>
+        <div class="wf-field"><label>Longitude</label><input class="wf-input" placeholder="31.2357" readonly></div>
+        <div class="wf-field"><label>Capacity (duties)</label><input class="wf-input" placeholder="40" readonly></div>
+        <div class="wf-field full"><label>Services available</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <label class="wf-toggle"><div class="wf-toggle-box on"><div class="wf-toggle-thumb"></div></div> Car Wash</label>
+          <label class="wf-toggle"><div class="wf-toggle-box on"><div class="wf-toggle-thumb"></div></div> Maintenance Bay</label>
+          <label class="wf-toggle"><div class="wf-toggle-box"><div class="wf-toggle-thumb"></div></div> EV Charging</label>
+          <label class="wf-toggle"><div class="wf-toggle-box"><div class="wf-toggle-thumb"></div></div> Fueling</label>
+        </div></div>
+      </div>
+      <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Hub</button></div>
+    </div>
+  </div>
+
+  <div class="mod-section">
+    <div class="mod-section-title">Open scope items</div>
+    <div class="open-item"><span class="open-item-badge open">Open</span><div><div class="open-item-text">Hub location model</div><div class="open-item-detail">Confirm final config fields — especially radius precision and multi-polygon support.</div></div></div>
+    <div class="open-item"><span class="open-item-badge decision">Decision needed</span><div><div class="open-item-text">HR integration</div><div class="open-item-detail">4-hour sync window mentioned — scope and ownership TBD. Does hub capacity sync from HR or is it ops-managed?</div></div></div>
+    <div class="open-item"><span class="open-item-badge decision">Decision needed</span><div><div class="open-item-text">Mobile in the car</div><div class="open-item-detail">In-car device management — config rules per hub or separate device management module?</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════ VEHICLES ═══════ -->
+<div id="mod-vehicles" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Fleet · Vehicles</div>
+    <div class="page-title">Vehicles</div>
+    <div class="page-sub">Manage the vehicle fleet. Every field is configurable. Tags control demand segment eligibility. Traits are typed attributes that feed directly into dispatch hard filters.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">List view — vehicle fleet</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search by plate, VIN, asset ID...</div>
+      <select class="wf-filter"><option>All categories</option><option>E-Cab</option><option>Comfort</option><option>E-Class</option><option>S-Class</option><option>MB Van</option></select>
+      <select class="wf-filter"><option>All hubs</option></select>
+      <select class="wf-filter"><option>Engine: All</option><option>EV</option><option>ICE</option></select>
+      <button class="wf-btn primary">+ Add Vehicle</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Asset ID</th><th>Plate</th><th>Category</th><th>Make / Model / Year</th><th>Engine</th><th>Hub</th><th>Tags</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0041</span></td><td>A·BC·123</td><td>E-Class</td><td>Mercedes E-Class 2023</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">Premium Fleet</span><span class="wf-tag">Airport Permitted</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0042</span></td><td>D·EF·456</td><td>E-Cab</td><td>Toyota Camry 2022</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0043</span></td><td>G·HI·789</td><td>MB Van</td><td>Mercedes Vito 2023</td><td>ICE</td><td>Gouna Terminal</td><td><span class="wf-tag">Wheelchair Accessible</span><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Add / Edit vehicle — all fields configurable</div>
+    <div class="wf-form">
+      <div class="wf-form-title">Vehicle identity</div>
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>Asset ID (SAP)</label><input class="wf-input" placeholder="VH-0041" readonly></div>
+        <div class="wf-field"><label>License Plate</label><input class="wf-input" placeholder="A·BC·123" readonly></div>
+        <div class="wf-field"><label>VIN</label><input class="wf-input" placeholder="WDB2130001X123456" readonly></div>
+        <div class="wf-field"><label>Make</label><input class="wf-input" placeholder="Mercedes-Benz" readonly></div>
+        <div class="wf-field"><label>Model</label><input class="wf-input" placeholder="E-Class" readonly></div>
+        <div class="wf-field"><label>Year</label><input class="wf-input" placeholder="2023" readonly></div>
+        <div class="wf-field"><label>Category</label><select class="wf-select"><option>E-Cab</option><option selected>E-Class</option><option>S-Class</option><option>Comfort</option><option>MB Van</option><option>Compact</option></select></div>
+        <div class="wf-field"><label>Engine Type</label><select class="wf-select"><option selected>ICE</option><option>EV</option></select></div>
+        <div class="wf-field"><label>Color</label><input class="wf-input" placeholder="Black" readonly></div>
+        <div class="wf-field"><label>Passenger Capacity</label><input class="wf-input" placeholder="4" readonly></div>
+        <div class="wf-field"><label>Hub Assignment</label><select class="wf-select"><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
+        <div class="wf-field"><label>Upholstery</label><select class="wf-select"><option>Leather</option><option>Fabric</option></select></div>
+      </div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Tags — segment eligibility</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <span class="wf-tag" style="cursor:pointer">✓ Premium Fleet</span>
+        <span class="wf-tag" style="cursor:pointer">✓ Airport Permitted</span>
+        <span class="wf-tag" style="opacity:.45;cursor:pointer">+ City-to-City</span>
+        <span class="wf-tag" style="opacity:.45;cursor:pointer">+ Wheelchair Accessible</span>
+        <span class="wf-tag" style="opacity:.45;cursor:pointer">+ EV Fleet</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">Tags are managed in the Tag Library. Click to assign or remove.</div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Traits — typed attributes (feed dispatch hard filters)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <span class="wf-trait">has_ramp = false</span>
+        <span class="wf-trait">has_airport_permit = true</span>
+        <span class="wf-trait">permit_expiry = 2027-06</span>
+        <span class="wf-trait">battery_range_km = —</span>
+        <span class="wf-trait">city_to_city_eligible = false</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">Trait types and definitions managed in Trait Definitions. Values set per vehicle.</div>
+    </div>
+    <div class="wf-form-footer" style="justify-content:flex-end;display:flex;gap:8px;padding:0 0 4px"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Vehicle</button></div>
+  </div>
+
+  <div class="mod-section">
+    <div class="mod-section-title">Open scope items</div>
+    <div class="open-item"><span class="open-item-badge tbd">To be defined</span><div><div class="open-item-text">Document types for vehicles</div><div class="open-item-detail">Upload rules, expiry logic, and required document types not yet defined.</div></div></div>
+    <div class="open-item"><span class="open-item-badge decision">Decision needed</span><div><div class="open-item-text">Maintenance module</div><div class="open-item-detail">Separate module or attribute set on vehicle? Affects how maintenance blocks dispatch eligibility.</div></div></div>
+    <div class="open-item"><span class="open-item-badge open">Open</span><div><div class="open-item-text">Charging / Fueling</div><div class="open-item-detail">Fleet ops — module or attribute on vehicle? EV charging windows are hard blocks in dispatch engine.</div></div></div>
+    <div class="open-item"><span class="open-item-badge decision">Decision needed</span><div><div class="open-item-text">Vendor management</div><div class="open-item-detail">Not defined — fleet partner or service vendor? Outsourced vehicles (e.g. Sixt) need a clear model.</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════ DRIVERS ═══════ -->
+<div id="mod-drivers" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Fleet · Drivers</div>
+    <div class="page-title">Drivers</div>
+    <div class="page-sub">Manage driver profiles, hub assignments, shift preferences, tags, and traits. Tags control which demand segments a driver is eligible for. Traits are verifiable attributes checked by the dispatch hard filter.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">List view — all drivers</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search by name, SAP ID, phone...</div>
+      <select class="wf-filter"><option>All hubs</option><option>Cairo HQ</option><option>Gouna Terminal</option></select>
+      <select class="wf-filter"><option>All statuses</option><option>Active</option><option>On duty</option><option>Off shift</option><option>Blocked</option></select>
+      <button class="wf-btn ghost">Export</button>
+      <button class="wf-btn primary">+ Add Driver</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Name</th><th>SAP ID</th><th>Hub</th><th>Rating</th><th>Tags</th><th>Shift Pref.</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mohamed A.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1042</span></td><td>Cairo HQ</td><td>⭐ 4.8</td><td><span class="wf-tag">Airport Certified</span><span class="wf-tag">Premium</span></td><td>Shift 1</td><td><span class="wf-status active">● On Duty</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><strong>Karim M.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1043</span></td><td>Cairo HQ</td><td>⭐ 4.6</td><td><span class="wf-tag">City-to-City</span></td><td>Either</td><td><span class="wf-status inactive">● Off Shift</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><strong>Ahmed S.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1044</span></td><td>Gouna Terminal</td><td>⭐ 4.9</td><td><span class="wf-tag">Premium</span><span class="wf-tag">VIP Driver</span></td><td>Shift 2</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Driver profile — Add / Edit</div>
+    <div class="wf-form">
+      <div class="wf-form-title">Personal & professional</div>
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>Full Name</label><input class="wf-input" placeholder="Mohamed Ahmed" readonly></div>
+        <div class="wf-field"><label>SAP ID</label><input class="wf-input" placeholder="SAP-1042" readonly></div>
+        <div class="wf-field"><label>Phone Number</label><input class="wf-input" placeholder="+20 1XX XXX XXXX" readonly></div>
+        <div class="wf-field"><label>Hub</label><select class="wf-select"><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
+        <div class="wf-field"><label>Shift Preference</label><select class="wf-select"><option>Shift 1</option><option>Shift 2</option><option>Either</option></select></div>
+        <div class="wf-field"><label>License Type</label><select class="wf-select"><option>Type A</option><option>Type B</option><option>Type C</option></select></div>
+        <div class="wf-field"><label>Recurring Day Off</label><select class="wf-select"><option>Friday</option><option>Saturday</option><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option></select></div>
+        <div class="wf-field"><label>Languages</label><input class="wf-input" placeholder="Arabic, English" readonly></div>
+        <div class="wf-field"><label>Rating</label><input class="wf-input" placeholder="4.8 (system-calculated)" readonly></div>
+        <div class="wf-field"><label>Certification</label><input class="wf-input" placeholder="e.g. Defensive Driving" readonly></div>
+        <div class="wf-field"><label>Status</label><select class="wf-select"><option>Active</option><option>Inactive</option><option>Blocked</option></select></div>
+      </div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Tags — demand segment eligibility</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <span class="wf-tag">✓ Airport Certified</span>
+        <span class="wf-tag">✓ Premium</span>
+        <span class="wf-tag" style="opacity:.45">+ City-to-City</span>
+        <span class="wf-tag" style="opacity:.45">+ VIP Driver</span>
+        <span class="wf-tag" style="opacity:.45">+ EV Trained</span>
+      </div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Traits — key-value attributes (dispatch hard filters + personalization)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <span class="wf-trait">total_rides = 3420</span>
+        <span class="wf-trait">rating = 4.8</span>
+        <span class="wf-trait">has_airport_permit = true</span>
+        <span class="wf-trait">permit_expiry = 2027-03</span>
+        <span class="wf-trait">city_to_city_eligible = true</span>
+        <span class="wf-trait">languages = [AR, EN]</span>
+      </div>
+    </div>
+    <div class="wf-form-footer" style="display:flex;gap:8px;justify-content:flex-end"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Driver</button></div>
+  </div>
+
+  <div class="mod-section">
+    <div class="mod-section-title">Open scope items</div>
+    <div class="open-item"><span class="open-item-badge tbd">To be defined</span><div><div class="open-item-text">Document types for drivers</div><div class="open-item-detail">DL, permits, certifications — upload rules, expiry logic not yet defined.</div></div></div>
+    <div class="open-item"><span class="open-item-badge decision">Decision needed</span><div><div class="open-item-text">Spoofing location detection</div><div class="open-item-detail">Driver compliance feature — in scope for admin panel or a separate ops tool?</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════ SHIFTS ═══════ -->
+<div id="mod-shifts" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Operations · Shift Management</div>
+    <div class="page-title">Shift Management</div>
+    <div class="page-sub">Configure shift patterns, plan monthly rosters, and manage duty assignments. Vehicles run two 10-hour shifts per day with a 2-hour gap. Drivers work one shift per day, 6 days a week.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Roster view — duties by hub and shift</div>
+    <div class="wf-toolbar">
+      <select class="wf-filter"><option>Cairo HQ</option><option>Gouna Terminal</option></select>
+      <select class="wf-filter"><option>June 2026</option><option>July 2026</option></select>
+      <select class="wf-filter"><option>All shifts</option><option>Shift 1</option><option>Shift 2</option></select>
+      <button class="wf-btn secondary">Auto-suggest</button>
+      <button class="wf-btn primary">Publish Roster</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>ID</th><th>Vehicle</th><th>Shift</th><th>Start</th><th>End</th><th>Driver</th><th>Day Off</th><th>Actions</th><th>Alerts</th></tr></thead>
+      <tbody>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-001</span></td><td>A·BC·123 (E-Class)</td><td>Shift 1</td><td>04:00</td><td>14:00</td><td>Mohamed A.</td><td>Friday</td><td class="wf-actions"><span class="wf-action">Reassign</span></td><td>—</td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-002</span></td><td>D·EF·456 (E-Cab)</td><td>Shift 2</td><td>15:00</td><td>01:00</td><td>Karim M.</td><td>Sunday</td><td class="wf-actions"><span class="wf-action">Reassign</span></td><td>—</td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-003</span></td><td>G·HI·789 (MB Van)</td><td>Shift 1</td><td>04:00</td><td>14:00</td><td style="color:var(--s5-dark);font-weight:600">⚠ Unassigned</td><td>—</td><td class="wf-actions"><span class="wf-action">Assign</span></td><td><span class="wf-status blocked">● Gap</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Shift pattern configuration — all values configurable</div>
+    <div class="wf-form">
+      <div class="wf-form-title">Pattern A</div>
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>Shift 1 Start</label><input class="wf-input" placeholder="04:00" readonly></div>
+        <div class="wf-field"><label>Shift 1 End</label><input class="wf-input" placeholder="14:00" readonly></div>
+        <div class="wf-field"><label>Gap (hard block)</label><input class="wf-input" placeholder="14:00 – 15:00 (2 hrs)" readonly></div>
+        <div class="wf-field"><label>Shift 2 Start</label><input class="wf-input" placeholder="15:00" readonly></div>
+        <div class="wf-field"><label>Shift 2 End</label><input class="wf-input" placeholder="01:00" readonly></div>
+        <div class="wf-field"><label>Effective Date</label><input class="wf-input" placeholder="2026-06-01" readonly></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">On-press: driver drill-down</div>
+    <table class="wf-table">
+      <thead><tr><th>Driver</th><th>Vehicle</th><th>Shift</th><th>Day Off</th><th>Actions</th><th>Price</th></tr></thead>
+      <tbody>
+        <tr><td>Mohamed A.</td><td>A·BC·123</td><td>Friday / Shift 1</td><td>Friday</td><td class="wf-actions"><span class="wf-action">Edit</span></td><td>—</td></tr>
+        <tr><td>Karim M.</td><td>D·EF·456</td><td>Tuesday / Shift 2</td><td>Sunday</td><td class="wf-actions"><span class="wf-action">Edit</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════ AREAS ═══════ -->
+<div id="mod-areas" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Operations · Areas Management</div>
+    <div class="page-title">Areas Management</div>
+    <div class="page-sub">Define geographic areas using map polylines or polygon drawing. Areas are linked to governorates, tagged for metadata, and used for pricing, dispatch routing, and service type gating.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Areas map view</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search areas...</div>
+      <select class="wf-filter"><option>All governorates</option><option>Cairo</option><option>Giza</option><option>Alexandria</option><option>Red Sea</option></select>
+      <button class="wf-btn secondary">Draw Polygon</button>
+      <button class="wf-btn primary">+ Add Area</button>
+    </div>
+    <div class="wf-map"><span class="wf-map-label">🗺 Map — click + long press or draw polyline to define area boundary</span></div>
+    <table class="wf-table">
+      <thead><tr><th>Area ID</th><th>Name</th><th>Governorate</th><th>Tags (metadata)</th><th>Linked Services</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">AR-001</span></td><td>Cairo Downtown</td><td>Cairo</td><td><span class="wf-tag">In-City</span><span class="wf-tag">Airport Zone</span></td><td>Safe · Airport · Hourly</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View Map</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">AR-002</span></td><td>Gouna Resort</td><td>Red Sea</td><td><span class="wf-tag">City-to-City</span><span class="wf-tag">Destination</span></td><td>Travel Ride · Hourly</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View Map</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Add / Edit area</div>
+    <div class="wf-form">
+      <div class="wf-form-grid">
+        <div class="wf-field"><label>Area Name</label><input class="wf-input" placeholder="e.g. Cairo Downtown" readonly></div>
+        <div class="wf-field"><label>Governorate</label><select class="wf-select"><option>Cairo</option><option>Giza</option><option>Alexandria</option><option>Red Sea</option></select></div>
+        <div class="wf-field full"><label>Tags (metadata)</label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="wf-tag">✓ In-City</span><span class="wf-tag" style="opacity:.45">+ Airport Zone</span><span class="wf-tag" style="opacity:.45">+ City-to-City</span><span class="wf-tag" style="opacity:.45">+ Destination</span></div></div>
+        <div class="wf-field full"><label>Boundary</label><div class="wf-map" style="height:120px"><span class="wf-map-label">Click to draw boundary on map</span></div></div>
+      </div>
+      <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Area</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PRICING ═══════ -->
+<div id="mod-pricing" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Commercial · Pricing</div>
+    <div class="page-title">Pricing</div>
+    <div class="page-sub">All pricing parameters are configurable per service type, vehicle category, pickup-dropoff pair, and booking channel. Two formula models supported. Toggle between upfront and dynamic pricing per area.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Pricing formula — configurable parameters</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:11px;font-weight:700;margin-bottom:8px;color:var(--s4-dark)">Option 1 — Distance based (closest to current)</div>
+        <div class="wf-formula">
+          <div class="f-line"><span class="f-op">=</span><span class="f-var">Base Price<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">(Km × Price/km)<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">(Trip time × Price/min)<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">×</span><span class="f-var">Surge factor<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">Waiting Time fee<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">Service Fee<span class="configurable">TBD</span></span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;margin-bottom:8px;color:var(--s2-dark)">Option 2 — Price bracket</div>
+        <div class="wf-formula">
+          <div class="f-line"><span class="f-op">=</span><span class="f-var">Price Bracket (by km range)<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">(Trip time × Price/min)<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">×</span><span class="f-var">Surge factor<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">Waiting Time fee<span class="configurable">configurable</span></span></div>
+          <div class="f-line"><span class="f-op add">+</span><span class="f-var">Service Fee<span class="configurable">TBD</span></span></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;padding:8px 10px;background:#fff;border-radius:6px;border:1px solid #D5D2E8">
+          <strong>Bracket example:</strong><br>
+          50–99 km = 30 EGP/km<br>
+          100–149 km = 25 EGP/km<br>
+          Base = 300 EGP<br>
+          Trip 100 km = 300 + 25×100 = <strong>2,800 EGP</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Pricing configuration — all fields configurable</div>
+    <div class="wf-toolbar">
+      <select class="wf-filter"><option>Service Type: All</option><option>Safe Ride</option><option>Airport</option><option>Hourly</option><option>City-to-City</option></select>
+      <select class="wf-filter"><option>Category: All</option><option>E-Cab</option><option>E-Class</option><option>S-Class</option></select>
+      <button class="wf-btn primary">+ Add Rule</button>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Configurable pricing parameters</div>
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>A. Service Type</label><select class="wf-select"><option>Safe Ride</option><option>Airport</option><option>Hourly</option></select></div>
+        <div class="wf-field"><label>B. Vehicle Category</label><select class="wf-select"><option>E-Cab</option><option>E-Class</option><option>S-Class</option></select></div>
+        <div class="wf-field"><label>C. Pickup → Dropoff</label><select class="wf-select"><option>Any</option><option>Cairo → Gouna</option></select></div>
+        <div class="wf-field"><label>D. Booking Channel</label><select class="wf-select"><option>App</option><option>Call Center</option><option>Corporate</option></select></div>
+        <div class="wf-field"><label>E. Min Price</label><input class="wf-input" placeholder="150 EGP" readonly></div>
+        <div class="wf-field"><label>E. Max Price</label><input class="wf-input" placeholder="5000 EGP" readonly></div>
+        <div class="wf-field"><label>F. Waiting Time Policy</label><select class="wf-select"><option>Free 5 min → 10 EGP/min</option><option>Custom</option></select></div>
+        <div class="wf-field"><label>G. Toll Price</label><select class="wf-select"><option>Included in base</option><option>Add actual toll</option></select></div>
+        <div class="wf-field"><label>H. Km Price Brackets</label><select class="wf-select"><option>Flat rate</option><option>Bracketed</option></select></div>
+        <div class="wf-field"><label>I. Price / MIN</label><input class="wf-input" placeholder="2.5 EGP/min" readonly></div>
+        <div class="wf-field"><label>J. Service Fee</label><input class="wf-input" placeholder="TBD" readonly></div>
+        <div class="wf-field"><label>K. Surge</label><select class="wf-select"><option>Off</option><option>Auto (dynamic)</option><option>Manual</option></select></div>
+        <div class="wf-field"><label>L. Upfront / Dynamic</label><div style="display:flex;gap:8px;margin-top:6px"><label class="wf-toggle"><div class="wf-toggle-box on"><div class="wf-toggle-thumb"></div></div> Upfront pricing</label></div></div>
+        <div class="wf-field"><label>L. Acceptable variance</label><input class="wf-input" placeholder="± 10%" readonly></div>
+        <div class="wf-field"><label>M. VAT</label><input class="wf-input" placeholder="14%" readonly></div>
+        <div class="wf-field"><label>N. Cancellation Policy</label><select class="wf-select"><option>0% → 50% → 100%</option><option>Custom</option></select></div>
+        <div class="wf-field full"><label>O. Exception rules</label><textarea class="wf-textarea" placeholder="e.g. Corporate accounts — fixed rate, no surge"></textarea></div>
+      </div>
+      <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Pricing Rule</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SERVICE TYPES ═══════ -->
+<div id="mod-servicetypes" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Commercial · Service Types</div>
+    <div class="page-title">Service Types</div>
+    <div class="page-sub">Define which service types are available in each area and city. In-city and city-to-city services have different dispatch rules and pricing models.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Service type matrix</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="wf-form">
+        <div class="wf-form-title">In-City services</div>
+        <table class="wf-table">
+          <thead><tr><th>Service</th><th>Status</th><th>Areas</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Safe Ride</strong></td><td><span class="wf-status active">● Active</span></td><td>All Cairo areas</td></tr>
+            <tr><td><strong>Airport</strong></td><td><span class="wf-status active">● Active</span></td><td>Airport zone areas</td></tr>
+            <tr><td><strong>Hour Packages</strong><br><span style="font-size:10px;color:var(--muted)">2h · 4h · 6h · 8h</span></td><td><span class="wf-status active">● Active</span></td><td>Cairo · Gouna</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="wf-form">
+        <div class="wf-form-title">City-to-City services</div>
+        <table class="wf-table">
+          <thead><tr><th>Service</th><th>Status</th><th>Routes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Travel Ride</strong></td><td><span class="wf-status active">● Active</span></td><td>Cairo ↔ Gouna</td></tr>
+            <tr><td><strong>Hour Packages</strong></td><td><span class="wf-status active">● Active</span></td><td>Cairo ↔ Alex</td></tr>
+            <tr><td><strong>Corporate</strong></td><td><span class="wf-status open">● Planned</span></td><td>TBD</td></tr>
+            <tr><td><strong>Sky Cab</strong></td><td><span class="wf-status open">● TBD</span></td><td>TBD</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CUSTOMERS ═══════ -->
+<div id="mod-customers" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Customers · Customer Management</div>
+    <div class="page-title">Customer Management</div>
+    <div class="page-sub">View and manage customer accounts, balances, payment methods, history, and status. Tags for segmentation. Traits for personalization and eligibility.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Customer list</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search by name, phone, email...</div>
+      <select class="wf-filter"><option>All statuses</option><option>Active</option><option>Blocked</option><option>Deleted</option></select>
+      <select class="wf-filter"><option>Sign-up city: All</option><option>Cairo</option><option>Alexandria</option></select>
+      <button class="wf-btn ghost">Export</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Name</th><th>Phone</th><th>Sign-up City</th><th>Rating</th><th>Balance</th><th>Tags</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sara M.</strong></td><td>+20 100 XXX XXXX</td><td>Cairo</td><td>⭐ 4.9</td><td>250 EGP</td><td><span class="wf-tag">VIP</span><span class="wf-tag">Subscription Active</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Edit</span></td></tr>
+        <tr><td><strong>Omar K.</strong></td><td>+20 101 XXX XXXX</td><td>Alexandria</td><td>⭐ 4.2</td><td>0 EGP</td><td><span class="wf-tag">Corporate</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Edit</span></td></tr>
+        <tr><td><strong>Nour A.</strong></td><td>+20 102 XXX XXXX</td><td>Cairo</td><td>—</td><td>-50 EGP</td><td>—</td><td><span class="wf-status blocked">● Blocked</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Unblock</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Customer profile — field definitions</div>
+    <div class="wf-detail">
+      <div class="wf-detail-card"><h4>Identity</h4>
+        <div class="wf-detail-row"><span class="wf-detail-key">Name fields</span><span class="wf-detail-val">First · Last</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Phone</span><span class="wf-detail-val">Primary + view history</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Email</span><span class="wf-detail-val">Verified email</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Sign-up city</span><span class="wf-detail-val">View only</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Created on</span><span class="wf-detail-val">View only</span></div>
+      </div>
+      <div class="wf-detail-card"><h4>Account</h4>
+        <div class="wf-detail-row"><span class="wf-detail-key">History</span><span class="wf-detail-val">View trips</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Balance</span><span class="wf-detail-val">SAP View</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Rating</span><span class="wf-detail-val">View only (system)</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Status</span><span class="wf-detail-val">Active · Blocked · Deleted</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Saved payments</span><span class="wf-detail-val">View only</span></div>
+      </div>
+      <div class="wf-detail-card"><h4>Traits</h4>
+        <div class="wf-detail-row"><span class="wf-detail-key">Organization</span><span class="wf-detail-val">Corporate link</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Points</span><span class="wf-detail-val">Loyalty balance</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">Subscription</span><span class="wf-detail-val">Tier + status</span></div>
+        <div class="wf-detail-row"><span class="wf-detail-key">total_rides</span><span class="wf-detail-val">System-calculated</span></div>
+      </div>
+      <div class="wf-detail-card"><h4>Tags</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+          <span class="wf-tag">VIP</span>
+          <span class="wf-tag">Corporate</span>
+          <span class="wf-tag">Frequent Rider</span>
+          <span class="wf-tag">Subscription Active</span>
+          <span class="wf-tag">New Customer</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px">Assigned by ops or auto-assigned by rule engine based on traits.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TAGS ═══════ -->
+<div id="mod-tags" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Segmentation · Tag Library</div>
+    <div class="page-title">Tag Library</div>
+    <div class="page-sub">Tags are segmentation labels — keywords assigned to entities for grouping, filtering, and demand routing. Managed here by ops. Tags can be added or removed from entities without changing the entity record.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">All tags — by entity type</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search tags...</div>
+      <select class="wf-filter"><option>All entities</option><option>Driver</option><option>Vehicle</option><option>Customer</option><option>Area</option></select>
+      <button class="wf-btn primary">+ Create Tag</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Tag</th><th>Applies to</th><th>Purpose</th><th>Assigned count</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><span class="wf-tag">VIP</span></td><td>Customer · Driver</td><td>Priority service routing</td><td>47</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">Airport Certified</span></td><td>Driver</td><td>Airport demand pool eligibility</td><td>12</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">Premium Fleet</span></td><td>Vehicle</td><td>Premium demand pool eligibility</td><td>18</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">City-to-City</span></td><td>Driver · Vehicle</td><td>C2C demand pool eligibility</td><td>23</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">Wheelchair Accessible</span></td><td>Vehicle</td><td>Accessibility demand routing</td><td>4</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">Corporate</span></td><td>Customer</td><td>Corporate account segmentation</td><td>89</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+        <tr><td><span class="wf-tag">EV Fleet</span></td><td>Vehicle</td><td>EV-specific demand and ops</td><td>6</td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Assign</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Create / edit tag</div>
+    <div class="wf-form">
+      <div class="wf-form-grid">
+        <div class="wf-field"><label>Tag Name (keyword)</label><input class="wf-input" placeholder="e.g. Airport Certified" readonly></div>
+        <div class="wf-field"><label>Applies to entities</label><select class="wf-select"><option>Driver</option><option>Vehicle</option><option>Customer</option><option>Area</option></select></div>
+        <div class="wf-field full"><label>Purpose / description</label><input class="wf-input" placeholder="What demand pool or routing does this tag enable?" readonly></div>
+      </div>
+      <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Tag</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TRAITS ═══════ -->
+<div id="mod-traits" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Segmentation · Trait Definitions</div>
+    <div class="page-title">Trait Definitions</div>
+    <div class="page-sub">Traits are key-value attributes — typed properties of an entity. The data type determines how a trait is stored, validated, and rendered in entity forms. Traits feed directly into dispatch hard filters and personalization.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Trait library — all defined traits</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search traits...</div>
+      <select class="wf-filter"><option>All entities</option><option>Driver</option><option>Vehicle</option><option>Customer</option></select>
+      <select class="wf-filter"><option>All data types</option><option>boolean</option><option>enum</option><option>multi-select</option><option>numeric</option><option>date</option></select>
+      <button class="wf-btn primary">+ Define Trait</button>
+    </div>
+    <table class="wf-table">
+      <thead><tr><th>Trait Key</th><th>Entity</th><th>Data Type</th><th>Example Value</th><th>Dispatch Use</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><span class="wf-trait">has_airport_permit</span></td><td>Driver · Vehicle</td><td><span style="font-size:10px;background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:5px;font-weight:600">boolean</span></td><td>true / false</td><td>Hard filter — airport trips</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">permit_expiry</span></td><td>Driver · Vehicle</td><td><span style="font-size:10px;background:#E6F1FB;color:#0C447C;padding:1px 7px;border-radius:5px;font-weight:600">date</span></td><td>2027-03-01</td><td>Expiry check at roster lock</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">city_to_city_eligible</span></td><td>Driver</td><td><span style="font-size:10px;background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:5px;font-weight:600">boolean</span></td><td>true / false</td><td>Hard filter — C2C trips</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">languages</span></td><td>Driver</td><td><span style="font-size:10px;background:#FEF3C7;color:#5A4300;padding:1px 7px;border-radius:5px;font-weight:600">multi-select</span></td><td>[Arabic, English]</td><td>Personalization / rider match</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">has_ramp</span></td><td>Vehicle</td><td><span style="font-size:10px;background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:5px;font-weight:600">boolean</span></td><td>true / false</td><td>Hard filter — accessibility</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">passenger_capacity</span></td><td>Vehicle</td><td><span style="font-size:10px;background:#F3EFFE;color:#5B21B6;padding:1px 7px;border-radius:5px;font-weight:600">numeric</span></td><td>4</td><td>Trip size filter</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">total_rides</span></td><td>Driver · Customer</td><td><span style="font-size:10px;background:#F3EFFE;color:#5B21B6;padding:1px 7px;border-radius:5px;font-weight:600">numeric</span></td><td>3420</td><td>Personalization / segmentation</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">rating</span></td><td>Driver · Customer</td><td><span style="font-size:10px;background:#F3EFFE;color:#5B21B6;padding:1px 7px;border-radius:5px;font-weight:600">numeric</span></td><td>4.8</td><td>Quality filter / ops review</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">subscription_tier</span></td><td>Customer</td><td><span style="font-size:10px;background:#FEF3C7;color:#5A4300;padding:1px 7px;border-radius:5px;font-weight:600">enum</span></td><td>Gold / Silver / None</td><td>Pricing / priority</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Define new trait</div>
+    <div class="wf-form">
+      <div class="wf-form-grid three">
+        <div class="wf-field"><label>Trait Key</label><input class="wf-input" placeholder="e.g. has_airport_permit" readonly></div>
+        <div class="wf-field"><label>Applies to</label><select class="wf-select"><option>Driver</option><option>Vehicle</option><option>Customer</option><option>Driver + Vehicle</option></select></div>
+        <div class="wf-field"><label>Data Type</label><select class="wf-select"><option>boolean</option><option>enum</option><option>multi-select</option><option>numeric</option><option>date</option></select></div>
+        <div class="wf-field"><label>Default Value</label><input class="wf-input" placeholder="false" readonly></div>
+        <div class="wf-field"><label>Dispatch use</label><select class="wf-select"><option>Hard filter</option><option>Personalization</option><option>Ops review</option><option>Reporting only</option></select></div>
+        <div class="wf-field"><label>Source</label><select class="wf-select"><option>Ops-entered</option><option>System-calculated</option><option>HR sync</option><option>External API</option></select></div>
+      </div>
+      <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Trait</button></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function showModule(id) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('mod-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
