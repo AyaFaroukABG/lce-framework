@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCE Dispatching Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rider:#534AB7;--rider-bg:#EEEDFE;--rider-border:#AFA9EC;--rider-dark:#3C3489;
+  --driver:#0F6E56;--driver-bg:#E1F5EE;--driver-border:#5DCAA5;--driver-dark:#085041;
+  --trip:#993C1D;--trip-bg:#FAECE7;--trip-border:#F0997B;--trip-dark:#712B13;
+  --vehicle:#185FA5;--vehicle-bg:#E6F1FB;--vehicle-border:#85B7EB;--vehicle-dark:#0C447C;
+  --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E3DC;--text:#1A1A18;--muted:#6B6B66;--subtle:#9E9D98;
+  --green:#0F6E56;--green-bg:#E1F5EE;--yellow:#7A5C00;--yellow-bg:#FEF3C7;
+  --red:#993C1D;--red-bg:#FAECE7;--blue:#185FA5;--blue-bg:#E6F1FB;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:48px;z-index:100}
+.header-logo{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.header-logo span{color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.header h1{font-size:16px;font-weight:600;color:var(--text)}
+.header p{font-size:12px;color:var(--muted);margin-top:1px}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:32px 24px}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--subtle);text-transform:uppercase;margin-bottom:12px}
+
+/* ENTITY CARDS */
+.entity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px}
+.entity-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;user-select:none}
+.entity-card:hover{border-color:var(--c);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.entity-card.active{border-color:var(--c);background:var(--cbg)}
+.entity-card[data-entity="rider"]{--c:var(--rider);--cbg:var(--rider-bg)}
+.entity-card[data-entity="driver"]{--c:var(--driver);--cbg:var(--driver-bg)}
+.entity-card[data-entity="trip"]{--c:var(--trip);--cbg:var(--trip-bg)}
+.entity-card[data-entity="vehicle"]{--c:var(--vehicle);--cbg:var(--vehicle-bg)}
+.entity-icon{width:32px;height:32px;border-radius:8px;background:var(--cbg);border:1px solid var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px}
+.entity-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.entity-sub{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* ENTITY DETAIL PANEL */
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:8px;min-height:200px}
+.detail-panel h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px}
+.attrs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.attr-pill{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid;font-weight:500}
+.attr-pill.rider{background:var(--rider-bg);color:var(--rider-dark);border-color:var(--rider-border)}
+.attr-pill.driver{background:var(--driver-bg);color:var(--driver-dark);border-color:var(--driver-border)}
+.attr-pill.trip{background:var(--trip-bg);color:var(--trip-dark);border-color:var(--trip-border)}
+.attr-pill.vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark);border-color:var(--vehicle-border)}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rule-item{display:flex;gap:8px;font-size:12px;color:var(--muted);line-height:1.5;align-items:flex-start}
+.rule-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.rule-dot.rider{background:var(--rider)}
+.rule-dot.driver{background:var(--driver)}
+.rule-dot.trip{background:var(--trip)}
+.rule-dot.vehicle{background:var(--vehicle)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:24px 0}
+
+/* TABS */
+.tab-row{display:flex;gap:4px;margin-bottom:16px}
+.tab{font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;font-family:'DM Sans',sans-serif}
+.tab:hover{background:var(--surface);color:var(--text)}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* PANELS */
+.panel{display:none}
+.panel.visible{display:block}
+
+/* ALGO STEPS */
+.algo-steps{display:flex;flex-direction:column}
+.step-wrap{display:flex;flex-direction:column}
+.algo-step{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .1s}
+.algo-step:hover{background:rgba(0,0,0,.03)}
+.step-num{width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'DM Mono',monospace}
+.step-num.s-rider{background:var(--rider-bg);color:var(--rider-dark)}
+.step-num.s-driver{background:var(--driver-bg);color:var(--driver-dark)}
+.step-num.s-trip{background:var(--trip-bg);color:var(--trip-dark)}
+.step-num.s-vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark)}
+.step-num.s-match{background:#F1EFE8;color:#444}
+.step-body{flex:1}
+.step-label{font-size:13px;font-weight:600;color:var(--text)}
+.step-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.step-checks{display:none;flex-wrap:wrap;gap:5px;margin-top:8px}
+.step-checks.open{display:flex}
+.check-tag{font-size:11px;padding:2px 9px;border-radius:12px;border:1px solid var(--border);color:var(--muted);background:var(--bg)}
+.connector{width:1px;height:10px;background:var(--border);margin-left:23px}
+
+/* INTERACTIONS */
+.int-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.int-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.int-pair{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.int-arrow{font-size:10px;color:var(--subtle)}
+.int-rule{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* GAPS */
+.gaps-list{display:flex;flex-direction:column;gap:8px}
+.gap-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+.gap-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.gap-label{font-size:13px;font-weight:500;color:var(--text)}
+.gap-detail{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* BADGES */
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:.03em;text-transform:uppercase}
+.badge.rider{background:var(--rider-bg);color:var(--rider-dark)}
+.badge.driver{background:var(--driver-bg);color:var(--driver-dark)}
+.badge.trip{background:var(--trip-bg);color:var(--trip-dark)}
+.badge.vehicle{background:var(--vehicle-bg);color:var(--vehicle-dark)}
+.badge.high{background:var(--red-bg);color:var(--red)}
+.badge.medium{background:var(--yellow-bg);color:var(--yellow)}
+.badge.low{background:var(--blue-bg);color:var(--blue)}
+
+/* WARNING BOX */
+.warn-box{background:var(--red-bg);border:1px solid var(--trip-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--trip-dark);line-height:1.5}
+
+/* NOTE BOX */
+.note-box{background:var(--blue-bg);border:1px solid var(--vehicle-border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--vehicle-dark);line-height:1.5}
+
+@media(max-width:700px){
+  .entity-grid{grid-template-columns:1fr 1fr}
+  .rules-grid{grid-template-columns:1fr}
+  .int-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<!-- GLOBAL NAV -->
+<nav style="background:#1A1A18;padding:0 32px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:300;gap:0">
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 20px 10px 0;margin-right:4px;border-right:1px solid rgba(255,255,255,.15);flex-shrink:0">
+    <span style="color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:5px">LCE</span>
+    <span style="color:rgba(255,255,255,.5);font-size:11px">Framework</span>
+  </div>
+  <a href="index.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent">Index</a>
+  <a href="dispatching-framework.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:#fff;text-decoration:none;white-space:nowrap;border-bottom:2px solid #fff;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#534AB7;flex-shrink:0"></span>Dispatching Framework</a>
+  <a href="platform-architecture.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>Platform Architecture</a>
+  <a href="dispatch-engine.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#0F6E56;flex-shrink:0"></span>Dispatch Engine</a>
+  <a href="booking-types.html" style="padding:12px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#185FA5;flex-shrink:0"></span>Booking Types</a>
+</nav>
+
+
+<div class="header">
+  <div class="header-logo"><span>LCE</span></div>
+  <div>
+    <h1>Dispatching Framework</h1>
+    <p>Rider · Driver · Trip · Vehicle — Business Rules & Dispatching Logic</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">Core entities — click to explore</div>
+
+  <div class="entity-grid" id="entity-grid">
+    <div class="entity-card active" data-entity="rider" onclick="selectEntity('rider')">
+      <div class="entity-icon">🧑</div>
+      <div class="entity-name">Rider</div>
+      <div class="entity-sub">The customer requesting the trip</div>
+    </div>
+    <div class="entity-card" data-entity="driver" onclick="selectEntity('driver')">
+      <div class="entity-icon">🚗</div>
+      <div class="entity-name">Driver</div>
+      <div class="entity-sub">The fulfillment agent assigned to trips</div>
+    </div>
+    <div class="entity-card" data-entity="trip" onclick="selectEntity('trip')">
+      <div class="entity-icon">🗺️</div>
+      <div class="entity-name">Trip</div>
+      <div class="entity-sub">The service event linking rider to driver</div>
+    </div>
+    <div class="entity-card" data-entity="vehicle" onclick="selectEntity('vehicle')">
+      <div class="entity-icon">🚙</div>
+      <div class="entity-name">Vehicle</div>
+      <div class="entity-sub">The asset assigned to a driver</div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detail-panel"></div>
+
+  <div class="divider"></div>
+
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('algo',this)">Dispatching algorithm</button>
+    <button class="tab" onclick="switchTab('interactions',this)">Module interactions</button>
+    <button class="tab" onclick="switchTab('gaps',this)">Open gaps</button>
+  </div>
+
+  <div id="tab-algo" class="panel visible">
+    <div class="note-box">The auto-assignment engine runs these 9 checks in strict order. A driver is eliminated the moment any single check fails. Click any step to expand the checks inside it.</div>
+    <div class="algo-steps" id="algo-steps"></div>
+  </div>
+
+  <div id="tab-interactions" class="panel">
+    <div class="int-grid" id="interactions"></div>
+  </div>
+
+  <div id="tab-gaps" class="panel">
+    <div class="warn-box">These gaps cannot be answered from the current blueprints. Each one needs a direct answer from the Tech Manager or operations team before the relevant module can be fully specified.</div>
+    <div class="gaps-list" id="gaps-list"></div>
+  </div>
+
+</div>
+
+<script>
+const entities = {
+  rider:{
+    attrs:['Customer ID','Mobile number','Payment method','Credit card token (Payfort)','Balance / due amount','Voucher applied','Corporate account flag','Trip history','Loyalty points','Subscription bundle'],
+    rules:['Pickup and dropoff must be within service area','Outstanding due amount blocks new booking creation','Only one voucher allowed per trip','Minimum 60 minutes lead time for scheduled trips','Corporate riders default to Invoice payment method','New customers may receive auto-popup voucher','Referral codes validated separately from vouchers','Account deletion flags record — does not purge data']
+  },
+  driver:{
+    attrs:['Driver ID','SAP ID','Shift type (DateTime / Date / Time / Recurring)','Availability flag','Vacation status','Day-off setting','Active trip status','GPS location (Firebase)','Check-in status','Load balance score'],
+    rules:['Must be in active shift at time of pickup','Availability flag must equal 1 for assignment','Vacation table checked before every assignment run','GPS location must be fresher than 10 minutes','Cannot hold two active trips simultaneously','Airport zone: only airport trips within 30-min window','Absence = available + not attended + no vacation + no day-off','Round-trip return legs locked to same driver']
+  },
+  trip:{
+    attrs:['Ticket ID','Trip type','Service type (car category)','Pickup area','Dropoff area','Scheduled time','Fare — estimated and actual','Payment status','Status lifecycle','Surge factor','Source channel','Number of cabs'],
+    rules:['Status flow: Opened → Assigned → ToCustomer → OnTheWay → Closed','Lost Business when no eligible driver found — silent failure','Surge recalculated hourly for next 48 hours','Airport trips use fixed price list per area','Round trips auto-link second leg to same driver','Multi-cab trips create separate tickets per cab','Cancellation fee applies after driver is assigned','Book-Now requests carry an expiry timer']
+  },
+  vehicle:{
+    attrs:['Car ID','Car type / service type','License plate','Assigned driver','Wheelchair ramp flag','Operational status','GPS device ID','Maintenance flag','Outsourced flag'],
+    rules:['Car type determines the price factor multiplier','Ramp option only available on specific car types','Outsourced cars (e.g. Sixt) tracked separately','Vehicle must not be in maintenance status','One vehicle assigned per driver per shift','Car type availability checked per location and time','SkyCab is a distinct service type (Air Taxi)','Shuttle Bus treated as a separate car category']
+  }
+};
+
+const algoSteps=[
+  {num:'1',cls:'s-rider',label:'Rider eligibility',desc:'Validates the requesting customer before any driver lookup begins.',checks:['In service area (geofence)','No outstanding balance','Account not locked','Min 60 min lead time']},
+  {num:'2',cls:'s-trip',label:'Trip classification',desc:'Determines pricing bucket and which driver pool to target.',checks:['Trip type (Safe Ride / Airport / Limo)','Service type (car category)','Surge window applied','Fixed vs distance-based pricing']},
+  {num:'3',cls:'s-driver',label:'Driver pool build',desc:'Pulls all drivers who pass baseline availability checks.',checks:['Active shift confirmed','Availability = 1','Not on vacation','No day-off conflict']},
+  {num:'4',cls:'s-driver',label:'Busy filter',desc:'Removes drivers already holding an active trip.',checks:['No Standby trips','No Assigned trips','No OnTheWay trips','No Opened / ToCustomer / Waiting trips']},
+  {num:'5',cls:'s-vehicle',label:'Vehicle match',desc:"Ensures the driver's vehicle fits the trip's service type requirement.",checks:['Car type = requested service type','Not in maintenance','Ramp if required by trip']},
+  {num:'6',cls:'s-match',label:'Location scoring',desc:'Scores remaining drivers by proximity and applies zone rules.',checks:['Firebase GPS < 10 min old','Google Maps distance/time scoring','Airport zone: 30-min window only','Load balance tiebreaker']},
+  {num:'7',cls:'s-trip',label:'Pre-assignment check',desc:'Honors any manual pre-assignment before auto-assign proceeds.',checks:['Pre-assigned driver checked first','Auto-assign skipped if pre-assigned']},
+  {num:'8',cls:'s-match',label:'Assignment and notify',desc:'Writes assignment and pushes notification to driver app.',checks:['Ticket status → Assigned','FCM push to driver app','Log to TicketDriverAssignmentLog','Firebase node synced']},
+  {num:'9',cls:'s-trip',label:'No match outcome',desc:'Silent failure path when no driver passes all checks.',checks:['Status → LostBusiness','No customer notification','No auto-retry','⚠️ Retry count unknown — open gap']}
+];
+
+const interactions=[
+  {pair:['Rider','Trip'],arrow:'→',rule:'Rider creates the trip. Due amount or block status prevents creation. Voucher and payment method travel with the trip.'},
+  {pair:['Trip','Driver'],arrow:'↔',rule:'Trip is matched to driver by the algorithm. Driver accepts via app status update. Round-trip second leg locked to same driver.'},
+  {pair:['Driver','Vehicle'],arrow:'↔',rule:'One vehicle per driver per shift. Vehicle car type determines which service types the driver can fulfill.'},
+  {pair:['Vehicle','Trip'],arrow:'→',rule:'Vehicle car type sets the price factor multiplier. Ramp requirement on trip must match vehicle capability.'},
+  {pair:['Rider','Driver'],arrow:'↔',rule:'Rating exchanged after trip closes. Rider rates driver. Driver can flag No-Show. Tips flow from rider to driver record.'},
+  {pair:['Trip','Vehicle'],arrow:'→',rule:'Trip service type constrains eligible vehicles. Airport trips restrict to drivers in airport zone within 30 minutes.'}
+];
+
+const gaps=[
+  {entity:'trip',priority:'high',label:'Retry count before Lost Business',detail:'Blueprint confirms silent failure but does not document how many assignment retry passes run before the trip is abandoned. Needs Tech Manager answer.'},
+  {entity:'driver',priority:'high',label:'Absence vs Availability=0 in dispatching',detail:'Absence is detectable (available + not attended + no vacation + no day-off). Whether absence is treated differently from Availability=0 during auto-assign is unclear.'},
+  {entity:'trip',priority:'high',label:'Book-Now expiry behavior',detail:'Expiry timer confirmed. What happens when it expires — silent cancel or Lost Business — is not documented.'},
+  {entity:'vehicle',priority:'medium',label:'Outsourced car assignment logic',detail:'Outsourced cars appear as a service type. Whether they enter the auto-assign pool or are always manually assigned is not confirmed.'},
+  {entity:'rider',priority:'medium',label:'Multi-cab payment: per ticket or bundle',detail:'Multiple cabs create multiple tickets. Whether payment is pre-authorised per ticket or as a bundle at booking time needs confirmation.'}
+];
+
+let currentEntity='rider';
+let openStep=null;
+
+function selectEntity(e){
+  currentEntity=e;
+  document.querySelectorAll('.entity-card').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`[data-entity="${e}"]`).classList.add('active');
+  renderDetail(e);
+}
+
+function renderDetail(e){
+  const d=entities[e];
+  const attrHtml=d.attrs.map(a=>`<span class="attr-pill ${e}">${a}</span>`).join('');
+  const rulesHtml=d.rules.map(r=>`<div class="rule-item"><span class="rule-dot ${e}"></span><span>${r}</span></div>`).join('');
+  document.getElementById('detail-panel').innerHTML=`
+    <h3>${e.charAt(0).toUpperCase()+e.slice(1)} — attributes &amp; business rules</h3>
+    <div class="attrs">${attrHtml}</div>
+    <div class="rules-grid">${rulesHtml}</div>`;
+}
+
+function renderAlgo(){
+  document.getElementById('algo-steps').innerHTML=algoSteps.map((s,i)=>`
+    <div class="step-wrap">
+      <div class="algo-step" onclick="toggleStep(${i})">
+        <span class="step-num ${s.cls}">${s.num}</span>
+        <div class="step-body">
+          <div class="step-label">${s.label}</div>
+          <div class="step-desc">${s.desc}</div>
+          <div class="step-checks" id="checks-${i}">${s.checks.map(c=>`<span class="check-tag">${c}</span>`).join('')}</div>
+        </div>
+      </div>
+      ${i<algoSteps.length-1?'<div class="connector"></div>':''}
+    </div>`).join('');
+}
+
+function toggleStep(i){
+  const el=document.getElementById(`checks-${i}`);
+  el.classList.toggle('open');
+}
+
+function renderInteractions(){
+  document.getElementById('interactions').innerHTML=interactions.map(x=>`
+    <div class="int-card">
+      <div class="int-pair"><span>${x.pair[0]}</span><span class="int-arrow">${x.arrow}</span><span>${x.pair[1]}</span></div>
+      <div class="int-rule">${x.rule}</div>
+    </div>`).join('');
+}
+
+function renderGaps(){
+  document.getElementById('gaps-list').innerHTML=gaps.map(g=>`
+    <div class="gap-card">
+      <div class="gap-header">
+        <span class="badge ${g.entity}">${g.entity}</span>
+        <span class="badge ${g.priority}">${g.priority}</span>
+        <span class="gap-label">${g.label}</span>
+      </div>
+      <div class="gap-detail">${g.detail}</div>
+    </div>`).join('');
+}
+
+function switchTab(t,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('visible'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('visible');
+}
+
+renderDetail('rider');
+renderAlgo();
+renderInteractions();
+renderGaps();
+</script>
+</body>
+</html>

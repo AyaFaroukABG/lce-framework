@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCE Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E3DC;--text:#1A1A18;--muted:#6B6B66;--subtle:#B0AFA9;
+  --s1:#1A1A18;--s1-bg:#EEECEA;--s1-border:#C8C6BF;
+  --s2:#185FA5;--s2-bg:#E6F1FB;--s2-border:#85B7EB;--s2-dark:#0C447C;
+  --s3:#7C3AED;--s3-bg:#F3EFFE;--s3-border:#C4A8F5;--s3-dark:#5B21B6;
+  --s4:#0F6E56;--s4-bg:#E1F5EE;--s4-border:#5DCAA5;--s4-dark:#085041;
+  --s5:#993C1D;--s5-bg:#FAECE7;--s5-border:#F0997B;--s5-dark:#712B13;
+  --s6:#7A5C00;--s6-bg:#FEF3C7;--s6-border:#F6D860;--s6-dark:#5A4300;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── GLOBAL NAV ── */
+.global-nav{background:var(--text);padding:0 32px;display:flex;align-items:center;gap:0;overflow-x:auto;position:sticky;top:0;z-index:300}
+.global-nav-logo{display:flex;align-items:center;gap:10px;padding:10px 0;margin-right:20px;border-right:1px solid rgba(255,255,255,.15);padding-right:20px;flex-shrink:0}
+.global-nav-logo span{color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:5px}
+.global-nav-logo p{color:rgba(255,255,255,.6);font-size:11px}
+.gnav-link{padding:12px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,.6);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:6px}
+.gnav-link:hover{color:#fff;background:rgba(255,255,255,.07)}
+.gnav-link.active{color:#fff;border-bottom-color:#fff}
+.gnav-dot{width:6px;height:6px;border-radius:50%}
+
+/* ── HEADER ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:28px 32px 24px}
+.header-eyebrow{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--subtle);text-transform:uppercase;margin-bottom:10px}
+.header-title{font-size:30px;font-weight:700;line-height:1.2;margin-bottom:8px}
+.header-title em{font-style:normal;color:var(--s3)}
+.header-sub{font-size:13px;color:var(--muted);max-width:560px;line-height:1.7}
+
+/* ── CONTAINER ── */
+.container{max-width:1200px;margin:0 auto;padding:36px 24px}
+.sec-eyebrow{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--subtle);text-transform:uppercase;margin-bottom:10px}
+
+/* ── PAGE CARDS ── */
+.pages-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:44px}
+.page-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;text-decoration:none;transition:box-shadow .15s,border-color .15s,transform .15s;display:block}
+.page-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.09);border-color:var(--pc);transform:translateY(-2px)}
+.page-card[data-p="arch"]{--pc:#7C3AED}
+.page-card[data-p="engine"]{--pc:#0F6E56}
+.page-card[data-p="types"]{--pc:#185FA5}
+.pc-top{padding:20px 22px 16px;border-bottom:1px solid var(--border)}
+.pc-eyebrow{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pc);margin-bottom:6px}
+.pc-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:5px}
+.pc-sub{font-size:12px;color:var(--muted);line-height:1.5}
+.pc-body{padding:14px 22px}
+.pc-tabs{display:flex;flex-direction:column;gap:3px}
+.pc-tab{font-size:11px;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.pc-tab:last-child{border-bottom:none}
+.pc-tab-num{font-family:'DM Mono',monospace;font-size:9px;font-weight:600;color:var(--subtle);width:14px;flex-shrink:0}
+.pc-footer{padding:10px 22px;border-top:1px solid var(--border);font-size:12px;font-weight:600;color:var(--pc);display:flex;align-items:center;justify-content:space-between}
+.pc-footer-arrow{font-size:14px}
+
+/* ── DIAGRAM ── */
+.diagram-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:44px}
+.diagram-header{padding:16px 22px;border-bottom:1px solid var(--border)}
+.diagram-header h2{font-size:14px;font-weight:700;margin-bottom:2px}
+.diagram-header p{font-size:12px;color:var(--muted)}
+.diagram-body{padding:24px;overflow-x:auto}
+
+/* ── CONNECTION TABLE ── */
+.conn-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:44px}
+.conn-table-header{padding:14px 22px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700}
+.conn-row{display:grid;grid-template-columns:1.2fr 1.5fr 1fr 2fr;border-bottom:1px solid var(--border);padding:11px 22px;gap:16px;align-items:start}
+.conn-row:last-child{border-bottom:none}
+.conn-row.hdr{background:var(--bg);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--subtle)}
+.conn-session{font-size:12px;font-weight:600;color:var(--text)}
+.conn-handoff{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.5}
+.conn-engine{font-size:11px;color:var(--muted);line-height:1.4}
+.conn-note{font-size:11px;color:var(--muted);line-height:1.5}
+.conn-badge{font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;text-transform:uppercase;display:inline-block;margin-bottom:3px}
+.conn-badge.session{background:var(--s3-bg);color:var(--s3-dark)}
+.conn-badge.types{background:var(--s2-bg);color:var(--s2-dark)}
+
+/* ── SCOPE ── */
+.owns-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:44px}
+.owns-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.owns-card h3{font-size:12px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.owns-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.owns-list{display:flex;flex-direction:column;gap:5px}
+.owns-item{font-size:12px;color:var(--muted);display:flex;gap:7px;line-height:1.4;align-items:flex-start}
+.owns-check{font-size:10px;flex-shrink:0;margin-top:2px;color:var(--subtle)}
+
+@media(max-width:860px){
+  .pages-row,.owns-grid{grid-template-columns:1fr}
+  .conn-row{grid-template-columns:1fr 1fr}
+  .global-nav{padding:0 16px}
+}
+</style>
+</head>
+<body>
+<!-- GLOBAL NAV -->
+<nav style="background:#1A1A18;padding:0 32px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:300;gap:0">
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 20px 10px 0;margin-right:4px;border-right:1px solid rgba(255,255,255,.15);flex-shrink:0;text-decoration:none">
+    <span style="color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:5px">LCE</span>
+    <span style="color:rgba(255,255,255,.5);font-size:11px">Framework</span>
+  </div>
+  <a href="index.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:#fff;border-bottom-color:#fff">Index</a>
+  <a href="dispatching-framework.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#534AB7;flex-shrink:0"></span>Dispatching Framework</a>
+  <a href="platform-architecture.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>Platform Architecture</a>
+  <a href="dispatch-engine.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#0F6E56;flex-shrink:0"></span>Dispatch Engine</a>
+  <a href="booking-types.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#185FA5;flex-shrink:0"></span>Booking Types</a>
+</nav>
+
+
+
+<div class="header">
+  <div class="container" style="padding-top:0;padding-bottom:0">
+    <div class="header-eyebrow">LCE Modernization Blueprint</div>
+    <div class="header-title">Three pages.<br><em>One platform.</em></div>
+    <div class="header-sub">Each page operates at a different level of abstraction. The architecture defines what states exist. The engine defines how assignment decisions are made. Booking types define what the engine is optimising across four distinct trip structures.</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- THREE PAGE CARDS -->
+  <div class="sec-eyebrow" style="margin-bottom:14px">Framework pages</div>
+  <div class="pages-row">
+    <a class="page-card" data-p="arch" href="platform-architecture.html">
+      <div class="pc-top">
+        <div class="pc-eyebrow">Layer 1 — Platform</div>
+        <div class="pc-name">Platform Architecture</div>
+        <div class="pc-sub">Six platform states, event bus, actor responsibilities, open architectural decisions.</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-tabs">
+          <div class="pc-tab"><span class="pc-tab-num">①</span>Pipeline view — horizontal stages</div>
+          <div class="pc-tab"><span class="pc-tab-num">②</span>State diagram with swim lanes</div>
+          <div class="pc-tab"><span class="pc-tab-num">③</span>Flowchart — every decision gate</div>
+          <div class="pc-tab"><span class="pc-tab-num">④</span>Event bus — canonical events per state</div>
+          <div class="pc-tab"><span class="pc-tab-num">⑤</span>Open architectural decisions</div>
+        </div>
+      </div>
+      <div class="pc-footer">Open page <span class="pc-footer-arrow">→</span></div>
+    </a>
+    <a class="page-card" data-p="engine" href="dispatch-engine.html">
+      <div class="pc-top">
+        <div class="pc-eyebrow">Layer 2 — Engine</div>
+        <div class="pc-name">Dispatch Engine</div>
+        <div class="pc-sub">Duty as atomic unit, hard filters, 8-term cost scoring function, re-optimisation, shifts &amp; roster, all configuration parameters.</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-tabs">
+          <div class="pc-tab"><span class="pc-tab-num">①</span>Overview — two layers + duty concept</div>
+          <div class="pc-tab"><span class="pc-tab-num">②</span>Hard feasibility filters (8 checks)</div>
+          <div class="pc-tab"><span class="pc-tab-num">③</span>Cost scoring function (8 terms)</div>
+          <div class="pc-tab"><span class="pc-tab-num">④</span>Re-optimisation — 10 triggers, 2 passes</div>
+          <div class="pc-tab"><span class="pc-tab-num">⑤</span>Shifts &amp; roster — patterns, 48h lock</div>
+          <div class="pc-tab"><span class="pc-tab-num">⑥</span>Configuration — 20 parameters</div>
+          <div class="pc-tab"><span class="pc-tab-num">⑦</span>Open questions (18)</div>
+        </div>
+      </div>
+      <div class="pc-footer">Open page <span class="pc-footer-arrow">→</span></div>
+    </a>
+    <a class="page-card" data-p="types" href="booking-types.html">
+      <div class="pc-top">
+        <div class="pc-eyebrow">Layer 3 — Trip types</div>
+        <div class="pc-name">Booking Types</div>
+        <div class="pc-sub">1-Way, Round Trip, Hourly, City-to-City — dispatch rules, handover logic, vehicle operability table, deployment trips.</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-tabs">
+          <div class="pc-tab"><span class="pc-tab-num">①</span>Booking types — click to expand each</div>
+          <div class="pc-tab"><span class="pc-tab-num">②</span>Hourly handover — Option A vs B</div>
+          <div class="pc-tab"><span class="pc-tab-num">③</span>City-to-city — overnight vs deadhead</div>
+          <div class="pc-tab"><span class="pc-tab-num">④</span>Vehicle operability table</div>
+          <div class="pc-tab"><span class="pc-tab-num">⑤</span>Deployment trips</div>
+        </div>
+      </div>
+      <div class="pc-footer">Open page <span class="pc-footer-arrow">→</span></div>
+    </a>
+  </div>
+
+  <!-- SYSTEM DIAGRAM -->
+  <div class="sec-eyebrow" style="margin-bottom:14px">How the pages connect</div>
+  <div class="diagram-wrap">
+    <div class="diagram-header">
+      <h2>System map — session logic → dispatch engine → booking types</h2>
+      <p>Every arrow is a documented handoff. State 04 (Matching) in the architecture page IS the dispatch engine — not a caller of it.</p>
+    </div>
+    <div class="diagram-body">
+      <svg width="100%" viewBox="0 0 1060 500" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+        <defs>
+          <marker id="ca" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#B0AFA9"/></marker>
+          <marker id="cg" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#0F6E56"/></marker>
+          <marker id="cp" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#7C3AED"/></marker>
+          <marker id="cb" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#185FA5"/></marker>
+          <marker id="cr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#993C1D"/></marker>
+        </defs>
+
+        <!-- PLATFORM ARCH strip -->
+        <rect x="20" y="16" width="1020" height="112" rx="10" fill="#F3EFFE" stroke="#C4A8F5" stroke-width="1.5"/>
+        <text x="36" y="36" font-size="9" font-weight="700" fill="#7C3AED" letter-spacing="0.07em">PLATFORM ARCHITECTURE — platform-architecture.html</text>
+
+        <rect x="36" y="46" width="140" height="68" rx="7" fill="#EEECEA" stroke="#1A1A18" stroke-width="1"/>
+        <text x="106" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#1A1A18">01 · Opening</text>
+        <text x="106" y="80" text-anchor="middle" font-size="8" fill="#6B6B66">Identity &amp; Readiness</text>
+        <text x="106" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">actor.identity.resolved</text>
+
+        <rect x="192" y="46" width="140" height="68" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+        <text x="262" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">02 · Shopping</text>
+        <text x="262" y="80" text-anchor="middle" font-size="8" fill="#6B6B66">Supply &amp; Demand</text>
+        <text x="262" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">supply.snapshot.updated</text>
+
+        <rect x="348" y="46" width="140" height="68" rx="7" fill="#F3EFFE" stroke="#7C3AED" stroke-width="1"/>
+        <text x="418" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#7C3AED">03 · Requesting</text>
+        <text x="418" y="80" text-anchor="middle" font-size="8" fill="#6B6B66">Intent &amp; Commitment</text>
+        <text x="418" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">trip.request.created</text>
+
+        <rect x="504" y="46" width="140" height="68" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="2"/>
+        <text x="574" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#0F6E56">04 · Matching</text>
+        <text x="574" y="80" text-anchor="middle" font-size="8" fill="#085041">= Dispatch Engine ↓</text>
+        <text x="574" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">driver.assigned</text>
+
+        <rect x="660" y="46" width="140" height="68" rx="7" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+        <text x="730" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#993C1D">05 · Active Trip</text>
+        <text x="730" y="80" text-anchor="middle" font-size="8" fill="#6B6B66">Live Fulfillment</text>
+        <text x="730" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">trip.completed</text>
+
+        <rect x="816" y="46" width="140" height="68" rx="7" fill="#FEF3C7" stroke="#7A5C00" stroke-width="1"/>
+        <text x="886" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#7A5C00">06 · Post-Trip</text>
+        <text x="886" y="80" text-anchor="middle" font-size="8" fill="#6B6B66">Settlement &amp; Signal</text>
+        <text x="886" y="104" text-anchor="middle" font-size="7" fill="#B0AFA9" font-family="DM Mono,monospace">payment.captured</text>
+
+        <line x1="176" y1="80" x2="190" y2="80" stroke="#B0AFA9" stroke-width="1" marker-end="url(#ca)"/>
+        <line x1="332" y1="80" x2="346" y2="80" stroke="#B0AFA9" stroke-width="1" marker-end="url(#ca)"/>
+        <line x1="488" y1="80" x2="502" y2="80" stroke="#B0AFA9" stroke-width="1" marker-end="url(#ca)"/>
+        <line x1="644" y1="80" x2="658" y2="80" stroke="#B0AFA9" stroke-width="1" marker-end="url(#ca)"/>
+        <line x1="800" y1="80" x2="814" y2="80" stroke="#B0AFA9" stroke-width="1" marker-end="url(#ca)"/>
+
+        <!-- DISPATCH ENGINE box -->
+        <rect x="20" y="232" width="480" height="240" rx="10" fill="#E1F5EE" stroke="#5DCAA5" stroke-width="1.5"/>
+        <text x="36" y="252" font-size="9" font-weight="700" fill="#0F6E56" letter-spacing="0.07em">DISPATCH ENGINE — dispatch-engine.html</text>
+        <rect x="36" y="264" width="130" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="101" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Duty</text>
+        <text x="101" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">Vehicle shift × Driver</text>
+        <text x="101" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Atomic dispatch unit</text>
+        <rect x="180" y="264" width="130" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="245" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Hard Filters</text>
+        <text x="245" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">8 binary checks</text>
+        <text x="245" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Any fail = eliminated</text>
+        <rect x="324" y="264" width="156" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="402" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Cost Scoring</text>
+        <text x="402" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">8-term cost function</text>
+        <text x="402" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Lowest cost duty wins</text>
+        <rect x="36" y="330" width="130" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="101" y="350" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Re-Optimisation</text>
+        <text x="101" y="364" text-anchor="middle" font-size="8" fill="#6B6B66">10 event triggers</text>
+        <text x="101" y="376" text-anchor="middle" font-size="8" fill="#6B6B66">Pass 1 + Pass 2</text>
+        <rect x="180" y="330" width="130" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="245" y="350" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Shifts &amp; Roster</text>
+        <text x="245" y="364" text-anchor="middle" font-size="8" fill="#6B6B66">Pattern A / B</text>
+        <text x="245" y="376" text-anchor="middle" font-size="8" fill="#6B6B66">48h roster lock</text>
+        <rect x="324" y="330" width="156" height="52" rx="6" fill="#fff" stroke="#5DCAA5" stroke-width="1"/>
+        <text x="402" y="350" text-anchor="middle" font-size="9" font-weight="700" fill="#085041">Config + Open Qs</text>
+        <text x="402" y="364" text-anchor="middle" font-size="8" fill="#6B6B66">20 parameters</text>
+        <text x="402" y="376" text-anchor="middle" font-size="8" fill="#6B6B66">18 open questions</text>
+
+        <!-- BOOKING TYPES box -->
+        <rect x="560" y="232" width="480" height="240" rx="10" fill="#E6F1FB" stroke="#85B7EB" stroke-width="1.5"/>
+        <text x="576" y="252" font-size="9" font-weight="700" fill="#185FA5" letter-spacing="0.07em">BOOKING TYPES — booking-types.html</text>
+        <rect x="576" y="264" width="100" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="626" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">1-Way</text>
+        <text x="626" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">Fully optimisable</text>
+        <text x="626" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">weight: 1.0</text>
+        <rect x="690" y="264" width="100" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="740" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">Round Trip</text>
+        <text x="740" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">Independent legs</text>
+        <text x="740" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Pass 1</text>
+        <rect x="804" y="264" width="100" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="854" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">Hourly</text>
+        <text x="854" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">Exclusive block</text>
+        <text x="854" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Pass 2 · weight 0.5</text>
+        <rect x="918" y="264" width="102" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="969" y="284" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">City-to-City</text>
+        <text x="969" y="298" text-anchor="middle" font-size="8" fill="#6B6B66">Extra filter</text>
+        <text x="969" y="310" text-anchor="middle" font-size="8" fill="#6B6B66">Wait + return</text>
+        <rect x="576" y="330" width="200" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="676" y="350" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">Hourly Handover</text>
+        <text x="676" y="364" text-anchor="middle" font-size="8" fill="#6B6B66">Option A vs B cost compare</text>
+        <text x="676" y="376" text-anchor="middle" font-size="8" fill="#6B6B66">OT rate vs empty km cost</text>
+        <rect x="790" y="330" width="230" height="52" rx="6" fill="#fff" stroke="#85B7EB" stroke-width="1"/>
+        <text x="905" y="350" text-anchor="middle" font-size="9" font-weight="700" fill="#185FA5">C2C — Overnight vs Deadhead</text>
+        <text x="905" y="364" text-anchor="middle" font-size="8" fill="#6B6B66">Cost A vs Cost B decision</text>
+        <text x="905" y="376" text-anchor="middle" font-size="8" fill="#6B6B66">Deployment trips as last resort</text>
+
+        <!-- ARROWS: sessions → engine -->
+        <line x1="262" y1="114" x2="230" y2="230" stroke="#185FA5" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#cb)"/>
+        <text x="215" y="170" font-size="8" fill="#185FA5">feasibility</text>
+        <text x="215" y="181" font-size="8" fill="#185FA5">preview</text>
+
+        <line x1="418" y1="114" x2="340" y2="230" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#cp)"/>
+        <text x="340" y="168" font-size="8" fill="#7C3AED">trip.request.</text>
+        <text x="340" y="179" font-size="8" fill="#7C3AED">created →</text>
+        <text x="340" y="190" font-size="8" fill="#7C3AED">instant assign</text>
+
+        <line x1="574" y1="114" x2="480" y2="230" stroke="#0F6E56" stroke-width="2" marker-end="url(#cg)"/>
+        <text x="490" y="158" font-size="8" fill="#0F6E56" font-weight="700">State 04</text>
+        <text x="490" y="169" font-size="8" fill="#0F6E56" font-weight="700">IS the engine</text>
+
+        <line x1="730" y1="114" x2="430" y2="230" stroke="#993C1D" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#cr)"/>
+        <text x="590" y="152" font-size="8" fill="#993C1D">re-opt triggers</text>
+
+        <line x1="886" y1="114" x2="450" y2="230" stroke="#7A5C00" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ca)"/>
+        <text x="710" y="175" font-size="8" fill="#7A5C00">capacity freed →</text>
+        <text x="710" y="186" font-size="8" fill="#7A5C00">ON HOLD promote</text>
+
+        <!-- ARROWS: engine ↔ types -->
+        <line x1="500" y1="358" x2="558" y2="358" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#cg)"/>
+        <text x="504" y="350" font-size="8" fill="#0F6E56">type-specific</text>
+        <text x="504" y="361" font-size="8" fill="#0F6E56">weights &amp; rules</text>
+        <line x1="558" y1="374" x2="500" y2="374" stroke="#185FA5" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#cb)"/>
+        <text x="504" y="392" font-size="8" fill="#185FA5">downstream weight,</text>
+        <text x="504" y="403" font-size="8" fill="#185FA5">churn, pass</text>
+
+        <!-- Legend -->
+        <line x1="36" y1="486" x2="56" y2="486" stroke="#0F6E56" stroke-width="2"/>
+        <text x="61" y="490" font-size="9" fill="#6B6B66">State 04 = engine</text>
+        <line x1="180" y1="486" x2="200" y2="486" stroke="#7C3AED" stroke-width="1.5"/>
+        <text x="205" y="490" font-size="9" fill="#6B6B66">Event triggers engine</text>
+        <line x1="340" y1="486" x2="360" y2="486" stroke="#B0AFA9" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="365" y="490" font-size="9" fill="#6B6B66">Async / continuous</text>
+        <line x1="490" y1="486" x2="510" y2="486" stroke="#185FA5" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="515" y="490" font-size="9" fill="#6B6B66">Type informs engine params</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- CONNECTION TABLE -->
+  <div class="sec-eyebrow" style="margin-bottom:14px">Exact handoff points</div>
+  <div class="conn-table">
+    <div class="conn-table-header">Session → Engine — six documented connection points</div>
+    <div class="conn-row hdr"><div>Session</div><div>Event / trigger</div><div>Engine action</div><div>Notes</div></div>
+    <div class="conn-row">
+      <div><span class="conn-badge session">session</span><div class="conn-session">02 · Shopping</div></div>
+      <div class="conn-handoff">Rider browses time slots</div>
+      <div class="conn-engine">Lightweight feasibility check — dims unavailable slots in UI</div>
+      <div class="conn-note">Vehicle-level checks only. Precise check re-runs at payment time.</div>
+    </div>
+    <div class="conn-row">
+      <div><span class="conn-badge session">session</span><div class="conn-session">03 · Requesting</div></div>
+      <div class="conn-handoff">trip.request.created</div>
+      <div class="conn-engine">Instant Assignment — hard filters + cost scoring → lowest-cost duty assigned</div>
+      <div class="conn-note">Payment authorized here. Fare locked. Trip type determines cost weights.</div>
+    </div>
+    <div class="conn-row">
+      <div><span class="conn-badge session">session</span><div class="conn-session">04 · Matching</div></div>
+      <div class="conn-handoff">State 04 IS the engine</div>
+      <div class="conn-engine">Architecture page describes the engine at platform level</div>
+      <div class="conn-note">Not a caller — State 04 and the dispatch engine are the same thing at different zoom levels.</div>
+    </div>
+    <div class="conn-row">
+      <div><span class="conn-badge session">session</span><div class="conn-session">05 · Active Trip</div></div>
+      <div class="conn-handoff">breakdown / late / absence events</div>
+      <div class="conn-engine">Re-opt triggers 3, 6, 8 — engine re-runs against remaining plan</div>
+      <div class="conn-note">90-min lock horizon protects near-departure trips. Churn penalty prevents marginal moves.</div>
+    </div>
+    <div class="conn-row">
+      <div><span class="conn-badge session">session</span><div class="conn-session">06 · Post-Trip</div></div>
+      <div class="conn-handoff">trip.completed → capacity freed</div>
+      <div class="conn-engine">Re-opt trigger 1 — ON HOLD bookings evaluated for promotion</div>
+      <div class="conn-note">ON HOLD riders get 15-min re-confirm window after promotion.</div>
+    </div>
+    <div class="conn-row" style="border-bottom:none">
+      <div><span class="conn-badge types">types</span><div class="conn-session">Booking Types → Engine</div></div>
+      <div class="conn-handoff">Trip type set at booking</div>
+      <div class="conn-engine">Type sets: downstream weight, re-opt pass, churn level, extra feasibility checks</div>
+      <div class="conn-note">Hourly → Pass 2, weight 0.5, high churn. C2C → extra shift-end filter. Round Trip → two independent scoring runs.</div>
+    </div>
+  </div>
+
+  <!-- SCOPE -->
+  <div class="sec-eyebrow" style="margin-bottom:14px">What each page owns</div>
+  <div class="owns-grid">
+    <div class="owns-card">
+      <h3><span class="owns-dot" style="background:#7C3AED"></span>Platform Architecture</h3>
+      <div class="owns-list">
+        <div class="owns-item"><span class="owns-check">›</span>Six platform states and their boundaries</div>
+        <div class="owns-item"><span class="owns-check">›</span>Which actor owns each state</div>
+        <div class="owns-item"><span class="owns-check">›</span>Canonical event bus and event names</div>
+        <div class="owns-item"><span class="owns-check">›</span>Swim lanes — active vs passive per state</div>
+        <div class="owns-item"><span class="owns-check">›</span>Failure exits and retry paths</div>
+        <div class="owns-item"><span class="owns-check">›</span>Architectural decisions (event bus, location layer, payment timing)</div>
+        <div class="owns-item" style="color:var(--s5-dark)"><span class="owns-check">✗</span>Not: how assignment decisions are made</div>
+      </div>
+    </div>
+    <div class="owns-card">
+      <h3><span class="owns-dot" style="background:#0F6E56"></span>Dispatch Engine</h3>
+      <div class="owns-list">
+        <div class="owns-item"><span class="owns-check">›</span>Duty as atomic dispatch unit</div>
+        <div class="owns-item"><span class="owns-check">›</span>All 8 hard feasibility filters</div>
+        <div class="owns-item"><span class="owns-check">›</span>8-term cost scoring function</div>
+        <div class="owns-item"><span class="owns-check">›</span>Re-optimisation: 10 triggers, Pass 1 + Pass 2</div>
+        <div class="owns-item"><span class="owns-check">›</span>Shift patterns, roster planning, 48h lock</div>
+        <div class="owns-item"><span class="owns-check">›</span>20 configuration parameters + 18 open questions</div>
+        <div class="owns-item" style="color:var(--s5-dark)"><span class="owns-check">✗</span>Not: platform state boundaries or event bus</div>
+      </div>
+    </div>
+    <div class="owns-card">
+      <h3><span class="owns-dot" style="background:#185FA5"></span>Booking Types</h3>
+      <div class="owns-list">
+        <div class="owns-item"><span class="owns-check">›</span>1-Way, Round Trip, Hourly, City-to-City rules</div>
+        <div class="owns-item"><span class="owns-check">›</span>Type-specific cost params (weight, churn, pass)</div>
+        <div class="owns-item"><span class="owns-check">›</span>Hourly handover — Option A vs B</div>
+        <div class="owns-item"><span class="owns-check">›</span>City-to-city overnight vs deadhead decision</div>
+        <div class="owns-item"><span class="owns-check">›</span>Vehicle operability table by city</div>
+        <div class="owns-item"><span class="owns-check">›</span>Deployment trips — priority, feasibility, revenue check</div>
+        <div class="owns-item" style="color:var(--s5-dark)"><span class="owns-check">✗</span>Not: the cost function itself (engine owns that)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCE Booking Types</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F3;--surface:#FFFFFF;--border:#E5E3DC;--text:#1A1A18;--muted:#6B6B66;--subtle:#B0AFA9;
+  --s1:#1A1A18;--s1-bg:#EEECEA;--s1-border:#C8C6BF;
+  --s2:#185FA5;--s2-bg:#E6F1FB;--s2-border:#85B7EB;--s2-dark:#0C447C;
+  --s3:#7C3AED;--s3-bg:#F3EFFE;--s3-border:#C4A8F5;--s3-dark:#5B21B6;
+  --s4:#0F6E56;--s4-bg:#E1F5EE;--s4-border:#5DCAA5;--s4-dark:#085041;
+  --s5:#993C1D;--s5-bg:#FAECE7;--s5-border:#F0997B;--s5-dark:#712B13;
+  --s6:#7A5C00;--s6-bg:#FEF3C7;--s6-border:#F6D860;--s6-dark:#5A4300;
+  --t-oneway:#185FA5;--t-round:#0F6E56;--t-hourly:#7C3AED;--t-c2c:#993C1D;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:32px;height:32px;background:var(--text);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo span{color:#fff;font-family:'DM Mono',monospace;font-size:10px;font-weight:500}
+.header h1{font-size:15px;font-weight:600}
+.header p{font-size:11px;color:var(--muted)}
+.hbadge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--s3-bg);color:var(--s3-dark);border:1px solid var(--s3-border);text-transform:uppercase;letter-spacing:.04em}
+
+.nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.nav-tab{padding:12px 18px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--text)}
+
+.container{max-width:1200px;margin:0 auto;padding:32px 24px}
+.view{display:none}.view.active{display:block}
+.sec-eyebrow{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--subtle);text-transform:uppercase;margin-bottom:8px}
+.sec-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:8px}
+.sec-title em{font-style:normal;color:var(--s3)}
+.sec-body{font-size:13px;color:var(--muted);max-width:640px;line-height:1.7;margin-bottom:28px}
+
+/* TYPE CARDS */
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.type-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all .15s;user-select:none}
+.type-card:hover,.type-card.active{border-color:var(--tc)}
+.type-card.active{background:var(--tcbg)}
+.type-card[data-t="oneway"]{--tc:#185FA5;--tcbg:#EBF3FD}
+.type-card[data-t="roundtrip"]{--tc:#0F6E56;--tcbg:#E1F5EE}
+.type-card[data-t="hourly"]{--tc:#7C3AED;--tcbg:#F3EFFE}
+.type-card[data-t="c2c"]{--tc:#993C1D;--tcbg:#FAECE7}
+.type-icon{width:36px;height:36px;border-radius:10px;background:var(--tcbg);border:1px solid var(--tc);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+.type-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.type-sub{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* TYPE DETAIL */
+.type-detail{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px;display:none}
+.type-detail.show{display:block}
+.td-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px}
+.td-color-bar{width:5px;border-radius:3px;flex-shrink:0;align-self:stretch}
+.td-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.td-subtitle{font-size:12px;color:var(--muted);line-height:1.6}
+.td-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.td-col{padding:18px 22px;border-right:1px solid var(--border)}
+.td-col:last-child{border-right:none}
+.td-col-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);margin-bottom:12px}
+.rule-list{display:flex;flex-direction:column;gap:6px}
+.rule-item{font-size:12px;color:var(--muted);display:flex;gap:8px;line-height:1.5;align-items:flex-start}
+.rule-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.tag-row{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:8px;border:1px solid}
+
+/* FLOW DIAGRAM WRAP */
+.flow-diagram{background:var(--bg);border-top:1px solid var(--border);padding:20px 22px;overflow-x:auto}
+
+/* HANDOVER SECTION */
+.handover-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.handover-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.handover-card-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700}
+.handover-card-body{padding:14px 16px}
+.hstep{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.hstep:last-child{margin-bottom:0}
+.hstep-num{width:22px;height:22px;border-radius:50%;background:var(--s3-bg);color:var(--s3-dark);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'DM Mono',monospace}
+.hstep-text{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* C2C SECTION */
+.c2c-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.c2c-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.c2c-card h4{font-size:12px;font-weight:700;margin-bottom:10px}
+.cost-formula{font-family:'DM Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;line-height:2;margin-bottom:10px}
+.cost-line{display:flex;gap:8px}
+.cost-op{width:14px;font-weight:700;flex-shrink:0}
+.cost-op.add{color:var(--s5-dark)}
+.cost-op.sub{color:var(--s4-dark)}
+
+/* OPERABILITY TABLE */
+.ops-table{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px}
+.ops-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);padding:9px 16px;gap:8px;align-items:center}
+.ops-row:last-child{border-bottom:none}
+.ops-row.hdr{background:var(--bg);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--subtle)}
+.ops-vehicle{font-size:12px;font-weight:600}
+.ops-yes{font-size:11px;font-weight:700;color:var(--s4-dark);display:flex;align-items:center;gap:4px}
+.ops-no{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+
+/* DEPLOYMENT */
+.deploy-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:28px}
+.deploy-priority{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.dp{font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.dp-num{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+@media(max-width:760px){
+  .type-grid{grid-template-columns:1fr 1fr}
+  .td-body,.handover-layout,.c2c-grid{grid-template-columns:1fr}
+  .td-col{border-right:none;border-bottom:1px solid var(--border)}
+  .td-col:last-child{border-bottom:none}
+  .ops-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<!-- GLOBAL NAV -->
+<nav style="background:#1A1A18;padding:0 32px;display:flex;align-items:center;overflow-x:auto;position:sticky;top:0;z-index:300;gap:0">
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 20px 10px 0;margin-right:4px;border-right:1px solid rgba(255,255,255,.15);flex-shrink:0;text-decoration:none">
+    <span style="color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:5px">LCE</span>
+    <span style="color:rgba(255,255,255,.5);font-size:11px">Framework</span>
+  </div>
+  <a href="index.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)">Index</a>
+  <a href="dispatching-framework.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#534AB7;flex-shrink:0"></span>Dispatching Framework</a>
+  <a href="platform-architecture.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>Platform Architecture</a>
+  <a href="dispatch-engine.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:rgba(255,255,255,.55)"><span style="width:6px;height:6px;border-radius:50%;background:#0F6E56;flex-shrink:0"></span>Dispatch Engine</a>
+  <a href="booking-types.html" style="padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;color:#fff;border-bottom-color:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#185FA5;flex-shrink:0"></span>Booking Types</a>
+</nav>
+
+
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo"><span>LCE</span></div>
+    <div>
+      <h1>Booking Types</h1>
+      <p>1-Way · Round Trip · Hourly · City-to-City</p>
+    </div>
+  </div>
+  <span class="hbadge">Spec v1.4</span>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="sw('types',this)">① Booking types</div>
+  <div class="nav-tab" onclick="sw('handover',this)">② Hourly handover</div>
+  <div class="nav-tab" onclick="sw('c2c',this)">③ City-to-city</div>
+  <div class="nav-tab" onclick="sw('operability',this)">④ Vehicle operability</div>
+  <div class="nav-tab" onclick="sw('deployment',this)">⑤ Deployment trips</div>
+</div>
+
+<!-- ═══════ VIEW 1 — TYPES ═══════ -->
+<div id="view-types" class="view active">
+<div class="container">
+  <div class="sec-eyebrow">Booking types</div>
+  <div class="sec-title">Four types. <em>Different dispatch logic for each.</em></div>
+  <div class="sec-body">These are not just UI variants. Each type has different feasibility rules, cost scoring weights, re-optimisation behaviour, and failure paths. Click any type to expand its dispatch logic.</div>
+
+  <div class="type-grid">
+    <div class="type-card active" data-t="oneway" onclick="selectType('oneway')">
+      <div class="type-icon">→</div>
+      <div class="type-name">1-Way</div>
+      <div class="type-sub">Standard A to B. Fully optimisable. Most common type.</div>
+    </div>
+    <div class="type-card" data-t="roundtrip" onclick="selectType('roundtrip')">
+      <div class="type-icon">⇄</div>
+      <div class="type-name">Round Trip</div>
+      <div class="type-sub">Two independent legs. Different drivers allowed.</div>
+    </div>
+    <div class="type-card" data-t="hourly" onclick="selectType('hourly')">
+      <div class="type-icon">⏱</div>
+      <div class="type-name">Hourly</div>
+      <div class="type-sub">2, 4, 6, or 8 hour exclusive block. High churn penalty.</div>
+    </div>
+    <div class="type-card" data-t="c2c" onclick="selectType('c2c')">
+      <div class="type-icon">🏙</div>
+      <div class="type-name">City-to-City</div>
+      <div class="type-sub">Driver + vehicle bound for full duty. Return logic applies.</div>
+    </div>
+  </div>
+
+  <div class="type-detail show" id="type-detail"></div>
+</div>
+</div>
+
+<!-- ═══════ VIEW 2 — HANDOVER ═══════ -->
+<div id="view-handover" class="view">
+<div class="container">
+  <div class="sec-eyebrow">Hourly — mid-trip driver handover</div>
+  <div class="sec-title">When the block doesn't fit <em>one shift</em></div>
+  <div class="sec-body">When an hourly booking is assigned, the system checks whether the full block fits within the driver's remaining shift including overtime allowance. If not, it evaluates two options and picks the cheaper one.</div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px">
+    <div style="padding:18px 22px;border-bottom:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Decision logic</div>
+      <div style="font-size:12px;color:var(--muted)">Runs at assignment time. If block fits → no handover. If not → compare Option A vs Option B.</div>
+    </div>
+    <div style="padding:20px 22px;overflow-x:auto">
+    <svg width="780" height="400" viewBox="0 0 780 400" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="ha" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#B0AFA9"/></marker>
+        <marker id="hg" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#0F6E56"/></marker>
+        <marker id="hr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#993C1D"/></marker>
+        <marker id="hb" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#185FA5"/></marker>
+      </defs>
+      <!-- Start -->
+      <ellipse cx="390" cy="22" rx="110" ry="16" fill="#F3EFFE" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="390" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#5B21B6">Hourly booking assigned</text>
+      <!-- Diamond: fits? -->
+      <polygon points="390,52 500,90 390,128 280,90" fill="#fff" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="390" y="87" text-anchor="middle" fill="#5B21B6">Full block fits shift</text>
+      <text x="390" y="101" text-anchor="middle" fill="#5B21B6">+ overtime cap?</text>
+      <!-- YES right → single driver -->
+      <rect x="524" y="74" width="120" height="32" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+      <text x="584" y="94" text-anchor="middle" font-weight="700" fill="#085041">Single driver ✓</text>
+      <!-- NO down -->
+      <text x="396" y="138" font-size="9" fill="#993C1D">NO</text>
+      <text x="502" y="86" font-size="9" fill="#0F6E56">YES</text>
+      <!-- Option A box -->
+      <rect x="80" y="160" width="180" height="60" rx="8" fill="#FEF3C7" stroke="#7A5C00" stroke-width="1.5"/>
+      <text x="170" y="181" text-anchor="middle" font-weight="700" fill="#5A4300">Option A</text>
+      <text x="170" y="196" text-anchor="middle" font-size="10" fill="#7A5C00">Keep original driver</text>
+      <text x="170" y="210" text-anchor="middle" font-size="10" fill="#7A5C00">OT rate × OT minutes</text>
+      <!-- Option B box -->
+      <rect x="520" y="160" width="200" height="60" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+      <text x="620" y="181" text-anchor="middle" font-weight="700" fill="#0C447C">Option B</text>
+      <text x="620" y="196" text-anchor="middle" font-size="10" fill="#185FA5">Handover to fresh driver</text>
+      <text x="620" y="210" text-anchor="middle" font-size="10" fill="#185FA5">empty_km cost + OT outgoing</text>
+      <!-- Diamond: second driver found? -->
+      <polygon points="620,248 710,276 620,304 530,276" fill="#fff" stroke="#185FA5" stroke-width="1.5"/>
+      <text x="620" y="273" text-anchor="middle" font-size="10" fill="#0C447C">Suitable second</text>
+      <text x="620" y="287" text-anchor="middle" font-size="10" fill="#0C447C">driver found?</text>
+      <!-- No → fallback to A -->
+      <rect x="520" y="322" width="200" height="32" rx="7" fill="#FAECE7" stroke="#F0997B" stroke-width="1"/>
+      <text x="620" y="342" text-anchor="middle" font-size="11" fill="#712B13">No driver → fallback to A</text>
+      <!-- Yes → compare -->
+      <polygon points="350,276 430,310 350,344 270,310" fill="#fff" stroke="#1A1A18" stroke-width="1.5"/>
+      <text x="350" y="307" text-anchor="middle" font-size="10">Option B cost</text>
+      <text x="350" y="321" text-anchor="middle" font-size="10">&lt; Option A?</text>
+      <!-- B wins -->
+      <rect x="140" y="366" width="130" height="28" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+      <text x="205" y="384" text-anchor="middle" font-size="11" font-weight="700" fill="#085041">Handover scheduled</text>
+      <!-- A wins -->
+      <rect x="380" y="366" width="130" height="28" rx="7" fill="#FEF3C7" stroke="#7A5C00" stroke-width="1"/>
+      <text x="445" y="384" text-anchor="middle" font-size="11" font-weight="700" fill="#5A4300">Keep original driver</text>
+      <!-- ARROWS -->
+      <line x1="390" y1="38" x2="390" y2="50" stroke="#B0AFA9" stroke-width="1.5" marker-end="url(#ha)"/>
+      <line x1="500" y1="90" x2="522" y2="90" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#hg)"/>
+      <line x1="390" y1="128" x2="350" y2="158" stroke="#993C1D" stroke-width="1.5" marker-end="url(#ha)"/>
+      <line x1="390" y1="128" x2="530" y2="158" stroke="#993C1D" stroke-width="1.5" marker-end="url(#ha)"/>
+      <line x1="620" y1="220" x2="620" y2="246" stroke="#B0AFA9" stroke-width="1.5" marker-end="url(#ha)"/>
+      <line x1="530" y1="276" x2="432" y2="298" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#hg)"/>
+      <line x1="620" y1="304" x2="620" y2="320" stroke="#993C1D" stroke-width="1.5" marker-end="url(#hr)"/>
+      <line x1="270" y1="310" x2="205" y2="364" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#hg)"/>
+      <line x1="350" y1="344" x2="445" y2="364" stroke="#993C1D" stroke-width="1.5" marker-end="url(#hr)"/>
+      <!-- labels -->
+      <text x="502" y="272" font-size="9" fill="#0F6E56">YES</text>
+      <text x="626" y="316" font-size="9" fill="#993C1D">NO</text>
+      <text x="260" y="306" font-size="9" fill="#0F6E56">YES</text>
+      <text x="356" y="354" font-size="9" fill="#993C1D">NO</text>
+    </svg>
+    </div>
+  </div>
+
+  <div class="handover-layout">
+    <div class="handover-card">
+      <div class="handover-card-header" style="background:var(--s6-bg);color:var(--s6-dark)">Option A — Keep original driver</div>
+      <div class="handover-card-body">
+        <div class="cost-formula">
+Cost A =<br>
+&nbsp;&nbsp;overtime_rate_per_min<br>
+&nbsp;&nbsp;× minutes_block_extends_beyond_shift_end
+        </div>
+        <div class="rule-list">
+          <div class="rule-item"><span class="rule-dot" style="background:var(--s6)"></span>Always available as fallback — no dependency on second driver</div>
+          <div class="rule-item"><span class="rule-dot" style="background:var(--s6)"></span>Chosen automatically when no second driver is found</div>
+          <div class="rule-item"><span class="rule-dot" style="background:var(--s6)"></span>Chosen if Option B cost ≥ Option A cost</div>
+        </div>
+      </div>
+    </div>
+    <div class="handover-card">
+      <div class="handover-card-header" style="background:var(--s2-bg);color:var(--s2-dark)">Option B — Handover to fresh driver</div>
+      <div class="handover-card-body">
+        <div class="cost-formula">
+Cost B =<br>
+&nbsp;&nbsp;cost_per_empty_km<br>
+&nbsp;&nbsp;× empty_km (incoming driver → handover point)<br>
++ any overtime for outgoing to reach safe stop
+        </div>
+        <div class="rule-list">
+          <div class="rule-item"><span class="rule-dot" style="background:var(--s2)"></span>Only considered if a suitable second driver is available</div>
+          <div class="rule-item"><span class="rule-dot" style="background:var(--s2)"></span>Chosen only if Cost B &lt; Cost A</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:28px">
+    <div style="font-size:11px;font-weight:700;margin-bottom:12px;color:var(--text)">How the handover executes</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="hstep"><span class="hstep-num">1</span><div class="hstep-text">System selects a handover point — a natural pause in the rider's itinerary or nearest safe stop to the shift boundary.</div></div>
+      <div class="hstep"><span class="hstep-num">2</span><div class="hstep-text">Outgoing driver always completes their current leg before stopping. Handover never happens mid-drive.</div></div>
+      <div class="hstep"><span class="hstep-num">3</span><div class="hstep-text">Incoming driver notified in advance with handover location and time.</div></div>
+      <div class="hstep"><span class="hstep-num">4</span><div class="hstep-text">Rider notified that a driver change will occur and at what point. (Consent vs notification — open question #9.)</div></div>
+      <div class="hstep"><span class="hstep-num">5</span><div class="hstep-text">At handover point: outgoing driver checks out, incoming driver checks in. Block continues uninterrupted.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ VIEW 3 — C2C ═══════ -->
+<div id="view-c2c" class="view">
+<div class="container">
+  <div class="sec-eyebrow">City-to-city</div>
+  <div class="sec-title">Driver and vehicle <em>bound for the full duty</em></div>
+  <div class="sec-body">After a city-to-city dropoff, the vehicle must return to its home base before the duty closes — via a revenue return leg or a deadhead. The return deadhead cost is pre-priced into the base fare.</div>
+
+  <div class="c2c-grid">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px">
+      <h4 style="font-size:12px;font-weight:700;margin-bottom:12px">Post-dropoff behaviour</h4>
+      <div class="rule-list">
+        <div class="rule-item"><span class="rule-dot" style="background:var(--s5)"></span>Wait window starts at dropoff (duration configurable per route)</div>
+        <div class="rule-item"><span class="rule-dot" style="background:var(--s4)"></span>If vehicle type is operable in destination → enters local trip pool with home base return credit applied</div>
+        <div class="rule-item"><span class="rule-dot" style="background:var(--muted)"></span>If vehicle type not operable → sits idle, available for return legs only</div>
+        <div class="rule-item"><span class="rule-dot" style="background:var(--s2)"></span>Re-optimisation continuously searches for return legs during wait window</div>
+        <div class="rule-item"><span class="rule-dot" style="background:var(--s5)"></span>When wait window expires → final re-opt attempt, then overnight vs deadhead decision</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px">
+      <h4 style="font-size:12px;font-weight:700;margin-bottom:12px">Additional feasibility check (city-to-city only)</h4>
+      <div class="cost-formula" style="font-size:10px;margin-bottom:10px">
+Shift end + max overtime<br>
+≥ est. dropoff<br>
+&nbsp;&nbsp;+ city wait window<br>
+&nbsp;&nbsp;+ travel time (destination → home base)
+      </div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5">Driver and vehicle are bound together for the full duty. City-to-city trips cannot be split between duties.</div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:12px">Overnight vs deadhead decision</div>
+  <div class="c2c-grid">
+    <div class="c2c-card">
+      <h4>Option A — Deadhead home now</h4>
+      <div class="cost-formula">
+        <div class="cost-line"><span class="cost-op add">=</span><span>cost_per_empty_km × km_to_home_base</span></div>
+        <div class="cost-line"><span class="cost-op add">+</span><span>expected_future_deployment_cost</span></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+        <strong>Expected future deployment cost</strong> = probability of confirmed pickup in destination within lookahead window × cost_per_empty_km × km from home to destination
+      </div>
+    </div>
+    <div class="c2c-card">
+      <h4>Option B — Overnight stay</h4>
+      <div class="cost-formula">
+        <div class="cost-line"><span class="cost-op add">=</span><span>overnight_compensation_cost</span></div>
+        <div class="cost-line"><span class="cost-op add">+</span><span>cost_per_empty_km × km_to_home_base</span></div>
+        <div class="cost-line"><span style="font-size:10px;color:var(--muted);margin-left:14px">(deferred to next shift)</span></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);padding:8px 10px;background:var(--bg);border-radius:6px;border:1px solid var(--border)">
+        Lookahead window: 24 hours (configurable). Engine re-evaluates at next shift start.
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--s4-bg);border:1px solid var(--s4-border);font-size:12px;color:var(--s4-dark)">
+    Decision: pick whichever option has the lower total cost. Engine runs this comparison once at wait window expiry.
+  </div>
+</div>
+</div>
+
+<!-- ═══════ VIEW 4 — OPERABILITY ═══════ -->
+<div id="view-operability" class="view">
+<div class="container">
+  <div class="sec-eyebrow">Vehicle operability</div>
+  <div class="sec-title">Which vehicle can operate <em>where</em></div>
+  <div class="sec-body">Used by dispatch after a city-to-city dropoff to determine whether the vehicle can enter the local trip pool at the destination. Values below are illustrative — final confirmation required from operations.</div>
+
+  <div class="ops-table">
+    <div class="ops-row hdr"><div>Vehicle type</div><div>Inside Cairo</div><div>City-to-City</div><div>Gouna</div></div>
+    <div class="ops-row"><div class="ops-vehicle">E-Cab</div><div class="ops-yes">✓ Yes</div><div class="ops-no">✗ No</div><div class="ops-yes">✓ Yes</div></div>
+    <div class="ops-row"><div class="ops-vehicle">Comfort</div><div class="ops-no">✗ No</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div></div>
+    <div class="ops-row"><div class="ops-vehicle">Compact</div><div class="ops-no">✗ No</div><div class="ops-no">✗ No</div><div class="ops-yes">✓ Yes</div></div>
+    <div class="ops-row"><div class="ops-vehicle">E-Class</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div></div>
+    <div class="ops-row"><div class="ops-vehicle">S-Class</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div></div>
+    <div class="ops-row"><div class="ops-vehicle">MB Van</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div><div class="ops-yes">✓ Yes</div></div>
+  </div>
+  <div style="padding:12px 16px;border-radius:8px;background:var(--s6-bg);border:1px solid var(--s6-border);font-size:12px;color:var(--s6-dark);margin-bottom:28px">
+    ⚠ Values above are illustrative — to be confirmed by operations before deployment. This table is open question #15 in the spec.
+  </div>
+
+  <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">Vehicle types in the fleet</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px">
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">E-Cab</span>
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">Comfort</span>
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">Compact</span>
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">E-Class</span>
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">S-Class</span>
+    <span style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">MB Van</span>
+  </div>
+  <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">Per vehicle record</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">Make / Model</span>
+    <span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">Ramp status</span>
+    <span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">Airport pass status</span>
+    <span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">Fuel type (EV / ICE)</span>
+    <span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">Home base hub</span>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ VIEW 5 — DEPLOYMENT ═══════ -->
+<div id="view-deployment" class="view">
+<div class="container">
+  <div class="sec-eyebrow">Deployment trips</div>
+  <div class="sec-title">Last resort — <em>always</em></div>
+  <div class="sec-body">A deployment trip positions a vehicle from its home base to a city where no vehicle is available. Used only when no local or in-transit option exists. Subject to both a feasibility check and a revenue justification check.</div>
+
+  <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">Priority order — always exhausted before deployment</div>
+  <div class="deploy-priority">
+    <div class="dp"><span class="dp-num" style="background:var(--s4-bg);color:var(--s4-dark)">1</span>Vehicle already at destination</div>
+    <div class="dp"><span class="dp-num" style="background:var(--s2-bg);color:var(--s2-dark)">2</span>Vehicle en route to destination</div>
+    <div class="dp"><span class="dp-num" style="background:var(--s5-bg);color:var(--s5-dark)">3</span>Deployment from home base ← last resort</div>
+  </div>
+
+  <div class="c2c-grid" style="margin-top:16px">
+    <div class="c2c-card">
+      <h4>Feasibility check</h4>
+      <div class="cost-formula" style="font-size:10px">
+Travel time:<br>
+home base → pickup city → trip dropoff → home base<br>
+≤ remaining shift time + max overtime allowance
+      </div>
+      <div style="font-size:11px;color:var(--muted)">Full round trip must fit within the duty's remaining time window including overtime.</div>
+    </div>
+    <div class="c2c-card">
+      <h4>Revenue justification check</h4>
+      <div class="cost-formula" style="font-size:10px">
+Trip revenue<br>
+≥ min_deployment_revenue_ratio<br>
+&nbsp;&nbsp;× cost_per_empty_km<br>
+&nbsp;&nbsp;× empty_km (home base → pickup city)
+      </div>
+      <div style="font-size:11px;color:var(--muted)">Only the outbound positioning cost is checked. Return deadhead is already priced into the base fare.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const types = {
+  oneway:{
+    color:'#185FA5',bg:'#EBF3FD',bar:'#185FA5',
+    name:'1-Way',subtitle:'Standard A to B. Driver is free at dropoff. Fully optimisable. Return deadhead assumed and priced into base fare. The default booking type — no special constraints.',
+    tags:[{label:'Fully optimisable',c:'#185FA5'},{label:'Pass 1 re-opt',c:'#0F6E56'},{label:'Downstream weight: 1.0',c:'#7A5C00'}],
+    rules:['Driver free at dropoff — immediately available for next assignment','Return deadhead cost pre-priced into base fare','Downstream dead km scored at full weight (1.0)','No idle window — other trips freely assignable','Subject to full cost function: all terms apply','Re-optimisable in Pass 1 (1-way and round trip pass)'],
+    dispatch:['Runs instant assignment at booking confirmation','Enters full re-optimisation in Pass 1','Home base return credit applies if dropoff closer to hub','End-of-shift repositioning cost applies in second half of shift','If city-to-city: post-dropoff behaviour and return window apply']
+  },
+  roundtrip:{
+    color:'#0F6E56',bg:'#E1F5EE',bar:'#0F6E56',
+    name:'Round Trip',subtitle:'Two fully independent 1-way legs. Both dispatched and optimised separately. No idle window between legs — other trips are freely assignable during the wait. Legs linked at rider and pricing level only.',
+    tags:[{label:'Independent legs',c:'#0F6E56'},{label:'Different drivers allowed',c:'#185FA5'},{label:'No idle window',c:'#7A5C00'}],
+    rules:['Two independent 1-way legs — each dispatched separately','Different drivers and different days are permitted for each leg','No idle window — other trips assignable during wait between legs','Both pickup times set at booking','Legs linked at rider and pricing level only — no dispatch dependency','Each leg treated as a standard 1-way for cost scoring purposes'],
+    dispatch:['Both legs enter instant assignment independently at booking','Each leg re-optimisable separately in Pass 1','No cross-leg constraint in dispatch engine','City-to-city: if city-to-city leg, post-dropoff wait window applies to that leg only','Return leg treated as a new booking for cost scoring — home base credit applies']
+  },
+  hourly:{
+    color:'#7C3AED',bg:'#F3EFFE',bar:'#7C3AED',
+    name:'Hourly',subtitle:'Exclusive time block of 2, 4, 6, or 8 hours. No other trips can be inserted during the block. Conservative re-optimisation with high churn penalty. Local trips only — no city-to-city hourly.',
+    tags:[{label:'Exclusive block',c:'#7C3AED'},{label:'Pass 2 re-opt only',c:'#185FA5'},{label:'High churn penalty',c:'#993C1D'},{label:'Local only',c:'#7A5C00'}],
+    rules:['Exclusive time block — no insertions during the block duration','Durations: 2, 4, 6, or 8 hours only','Projected dropoff = pickup location (to be validated on historical data)','Post-block buffer: 20 minutes before next assignment','Local trips only — no city-to-city hourly bookings','Downstream weight reduced to 0.5 (uncertain end location)','High churn penalty — prevents reshuffling once assigned'],
+    dispatch:['Placed in Pass 2 of re-optimisation (after all 1-way and round trip legs)','Fitted into remaining gaps after Pass 1 completes','Churn penalty discourages reassignment once placed','If block spans shift boundary → handover logic evaluates Option A vs B','Availability preview: lightweight feasibility check shown to rider while browsing']
+  },
+  c2c:{
+    color:'#993C1D',bg:'#FAECE7',bar:'#993C1D',
+    name:'City-to-City',subtitle:'Driver and vehicle bound together for the full duty. After dropoff the vehicle must return to home base — via a revenue return leg or a deadhead. Additional feasibility check applies.',
+    tags:[{label:'Driver + vehicle bound',c:'#993C1D'},{label:'Wait window',c:'#7C3AED'},{label:'Return required',c:'#0F6E56'},{label:'Overnight decision',c:'#7A5C00'}],
+    rules:['Driver and vehicle bound together for the full duty — cannot split','Available as 1-way or round trip (independent legs)','Vehicle must return to home base before duty closes','Wait window duration configurable per route','Vehicle operability at destination determines local trip eligibility','If no return leg found within wait window → overnight vs deadhead decision'],
+    dispatch:['Additional hard filter: shift end + OT ≥ dropoff + wait + return to hub','Post-dropoff: enters local pool if operable, return-legs-only if not','Home base return credit maximises return leg probability','Re-optimisation continuously seeks return legs during wait window','Overnight vs deadhead: cost comparison at wait window expiry']
+  }
+};
+
+let current = 'oneway';
+
+function selectType(t){
+  current = t;
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`[data-t="${t}"]`).classList.add('active');
+  renderType(t);
+}
+
+function renderType(t){
+  const d = types[t];
+  const tagsHtml = d.tags.map(tg=>`<span class="tag" style="color:${tg.c};border-color:${tg.c};background:${tg.c}18">${tg.label}</span>`).join('');
+  const rulesHtml = d.rules.map(r=>`<div class="rule-item"><span class="rule-dot" style="background:${d.color}"></span><span>${r}</span></div>`).join('');
+  const dispatchHtml = d.dispatch.map(r=>`<div class="rule-item"><span class="rule-dot" style="background:${d.color};opacity:.5"></span><span>${r}</span></div>`).join('');
+  document.getElementById('type-detail').innerHTML = `
+    <div class="td-header">
+      <div class="td-color-bar" style="background:${d.color}"></div>
+      <div>
+        <div class="td-title">${d.name}</div>
+        <div class="td-subtitle">${d.subtitle}</div>
+        <div class="tag-row" style="margin-top:8px">${tagsHtml}</div>
+      </div>
+    </div>
+    <div class="td-body">
+      <div class="td-col"><div class="td-col-label">Dispatch rules</div><div class="rule-list">${rulesHtml}</div></div>
+      <div class="td-col"><div class="td-col-label">Engine behaviour</div><div class="rule-list">${dispatchHtml}</div></div>
+    </div>`;
+}
+
+function sw(v,btn){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  btn.classList.add('active');
+}
+
+renderType('oneway');
+</script>
+</body>
+</html>
