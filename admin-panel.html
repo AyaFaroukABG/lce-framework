@@ -449,7 +449,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <div class="wf-toolbar">
       <div class="wf-search">🔍 Search patterns…</div>
       <select class="wf-filter"><option>All statuses</option><option>Active</option><option>Draft</option><option>Inactive</option></select>
-      <button class="wf-btn primary" onclick="document.getElementById('pattern-form-wrap').style.display='block'">+ New Pattern</button>
+      <button class="wf-btn primary">+ New Pattern</button>
     </div>
     <table class="wf-table">
       <thead>
@@ -505,16 +505,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </table>
   </div>
 
-  <!-- PATTERN FORM (hidden by default, revealed on + New Pattern) -->
-  <div id="pattern-form-wrap" class="wf-wrap" style="display:none">
+  <!-- PATTERN FORM (always visible; in production: opens on "+ New Pattern" click) -->
+  <div id="pattern-form-wrap" class="wf-wrap">
     <div class="wf-label">Shift pattern configuration — all values configurable</div>
     <div class="wf-form">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--s3-dark);margin-bottom:8px;display:flex;align-items:center;gap:5px"><span style="opacity:.6">&#9432;</span> Opens on "+ New Pattern" click</div>
       <div class="wf-form-title">New Pattern</div>
 
       <!-- Pattern name + hub + effective date -->
       <div class="wf-form-grid three" style="margin-bottom:14px">
         <div class="wf-field"><label>Pattern Name</label><input class="wf-input" placeholder="e.g. Pattern D"></div>
-        <div class="wf-field"><label>Hub Applicability</label><select class="wf-select"><option>All Hubs</option><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
+        <div class="wf-field" style="position:relative">
+          <label>Hub Applicability</label>
+          <div id="hub-dropdown" onclick="toggleHubDropdown()" style="height:32px;border:1px solid #D5D2E8;border-radius:6px;padding:0 10px;font-size:11px;background:#FAFAF9;color:var(--muted);width:100%;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
+            <span id="hub-display">Select hubs…</span>
+            <span style="font-size:9px;color:var(--subtle)">▾</span>
+          </div>
+          <div id="hub-menu" style="display:none;position:absolute;top:54px;left:0;right:0;background:#fff;border:1px solid #D5D2E8;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.08);z-index:200;overflow:hidden">
+            <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;border-bottom:1px solid #EEE" onclick="event.stopPropagation()"><input type="checkbox" id="hub-all" onchange="toggleAllHubs(this)" style="accent-color:var(--wf-btn)"> All Hubs</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:11px;color:var(--text);cursor:pointer" onclick="event.stopPropagation()"><input type="checkbox" class="hub-option" value="Cairo HQ" onchange="updateHubDisplay()" style="accent-color:var(--wf-btn)"> Cairo HQ</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:11px;color:var(--text);cursor:pointer" onclick="event.stopPropagation()"><input type="checkbox" class="hub-option" value="Gouna Terminal" onchange="updateHubDisplay()" style="accent-color:var(--wf-btn)"> Gouna Terminal</label>
+          </div>
+        </div>
         <div class="wf-field"><label>Effective Date</label><input class="wf-input" placeholder="YYYY-MM-DD"></div>
       </div>
 
@@ -543,7 +555,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
         <button onclick="addShiftRow()" class="wf-btn ghost" style="font-size:11px">+ Add Shift</button>
         <div style="display:flex;gap:8px">
-          <button class="wf-btn secondary" onclick="document.getElementById('pattern-form-wrap').style.display='none'">Cancel</button>
+          <button class="wf-btn secondary">Cancel</button>
           <button class="wf-btn secondary">Save as Draft</button>
           <button class="wf-btn primary">Activate Pattern</button>
         </div>
@@ -567,6 +579,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 <script>
 (function(){
   var shiftCount = 2;
+
+  window.toggleHubDropdown = function(){
+    var menu = document.getElementById('hub-menu');
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  };
+
+  window.toggleAllHubs = function(allCheckbox){
+    var opts = document.querySelectorAll('.hub-option');
+    opts.forEach(function(o){ o.checked = allCheckbox.checked; o.disabled = allCheckbox.checked; });
+    updateHubDisplay();
+  };
+
+  window.updateHubDisplay = function(){
+    var allCb = document.getElementById('hub-all');
+    if(allCb && allCb.checked){ document.getElementById('hub-display').textContent = 'All Hubs'; return; }
+    var checked = Array.from(document.querySelectorAll('.hub-option:checked')).map(function(o){ return o.value; });
+    document.getElementById('hub-display').textContent = checked.length ? checked.join(', ') : 'Select hubs…';
+  };
+
+  document.addEventListener('click', function(e){
+    var dd = document.getElementById('hub-dropdown');
+    var menu = document.getElementById('hub-menu');
+    if(menu && dd && !dd.contains(e.target) && !menu.contains(e.target)){
+      menu.style.display = 'none';
+    }
+  });
 
   window.addShiftRow = function(){
     shiftCount++;
