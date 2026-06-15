@@ -420,15 +420,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="page-header">
     <div class="page-eyebrow">Operations · Shift Management</div>
     <div class="page-title">Shift Management</div>
-    <div class="page-sub">Configure shift patterns, plan monthly rosters, and manage duty assignments. Vehicles run two 10-hour shifts per day with a 2-hour gap. Drivers work one shift per day, 6 days a week.</div>
+    <div class="page-sub">Configure shift patterns, plan monthly rosters, and manage duty assignments. Drivers work one shift per day, 6 days a week.</div>
   </div>
 
+  <!-- ROSTER VIEW -->
   <div class="wf-wrap">
     <div class="wf-label">Roster view — duties by hub and shift</div>
     <div class="wf-toolbar">
       <select class="wf-filter"><option>Cairo HQ</option><option>Gouna Terminal</option></select>
       <select class="wf-filter"><option>June 2026</option><option>July 2026</option></select>
-      <select class="wf-filter"><option>All shifts</option><option>Shift 1</option><option>Shift 2</option></select>
+      <select class="wf-filter"><option>All shifts</option><option>Shift 1</option><option>Shift 2</option><option>Shift 3</option></select>
       <button class="wf-btn secondary">Auto-suggest</button>
       <button class="wf-btn primary">Publish Roster</button>
     </div>
@@ -437,26 +438,120 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <tbody>
         <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-001</span></td><td>A·BC·123 (E-Class)</td><td>Shift 1</td><td>04:00</td><td>14:00</td><td>Mohamed A.</td><td>Friday</td><td class="wf-actions"><span class="wf-action">Reassign</span></td><td>—</td></tr>
         <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-002</span></td><td>D·EF·456 (E-Cab)</td><td>Shift 2</td><td>15:00</td><td>01:00</td><td>Karim M.</td><td>Sunday</td><td class="wf-actions"><span class="wf-action">Reassign</span></td><td>—</td></tr>
-        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-003</span></td><td>G·HI·789 (MB Van)</td><td>Shift 1</td><td>04:00</td><td>14:00</td><td style="color:var(--s5-dark);font-weight:600">⚠ Unassigned</td><td>—</td><td class="wf-actions"><span class="wf-action">Assign</span></td><td><span class="wf-status blocked">● Gap</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">D-003</span></td><td>G·HI·789 (MB Van)</td><td>Shift 1</td><td>04:00</td><td>14:00</td><td style="color:var(--s5-dark);font-weight:600">⚠ Unassigned</td><td>—</td><td class="wf-actions"><span class="wf-action">Assign</span></td><td><span class="wf-status blocked">● Unassigned</span></td></tr>
       </tbody>
     </table>
   </div>
 
+  <!-- PATTERNS TABLE -->
   <div class="wf-wrap">
+    <div class="wf-label">Shift patterns — all saved patterns</div>
+    <div class="wf-toolbar">
+      <div class="wf-search">🔍 Search patterns…</div>
+      <select class="wf-filter"><option>All statuses</option><option>Active</option><option>Draft</option><option>Inactive</option></select>
+      <button class="wf-btn primary" onclick="document.getElementById('pattern-form-wrap').style.display='block'">+ New Pattern</button>
+    </div>
+    <table class="wf-table">
+      <thead>
+        <tr>
+          <th>Pattern Name</th>
+          <th>Shifts</th>
+          <th>Shift Times</th>
+          <th>Hub Applicability</th>
+          <th>Effective Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Pattern A</strong></td>
+          <td><span class="wf-trait">2 shifts</span></td>
+          <td>
+            <span class="wf-trait">S1 04:00–14:00</span>
+            <span class="wf-trait">S2 15:00–01:00</span>
+          </td>
+          <td>All Hubs</td>
+          <td>2026-06-01</td>
+          <td><span class="wf-status active">● Active</span></td>
+          <td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Copy</span></td>
+        </tr>
+        <tr>
+          <td><strong>Pattern B</strong> <span style="font-size:10px;color:var(--muted)">Night Heavy</span></td>
+          <td><span class="wf-trait">3 shifts</span></td>
+          <td>
+            <span class="wf-trait">S1 06:00–14:00</span>
+            <span class="wf-trait">S2 14:30–22:30</span>
+            <span class="wf-trait">S3 23:00–07:00</span>
+          </td>
+          <td>Gouna Terminal</td>
+          <td>2026-07-01</td>
+          <td><span class="wf-status open">● Draft</span></td>
+          <td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Copy</span></td>
+        </tr>
+        <tr>
+          <td><strong>Pattern C</strong></td>
+          <td><span class="wf-trait">2 shifts</span></td>
+          <td>
+            <span class="wf-trait">S1 08:00–18:00</span>
+            <span class="wf-trait">S2 20:00–06:00</span>
+          </td>
+          <td>Cairo HQ</td>
+          <td>2026-08-01</td>
+          <td><span class="wf-status inactive">● Inactive</span></td>
+          <td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Copy</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PATTERN FORM (hidden by default, revealed on + New Pattern) -->
+  <div id="pattern-form-wrap" class="wf-wrap" style="display:none">
     <div class="wf-label">Shift pattern configuration — all values configurable</div>
     <div class="wf-form">
-      <div class="wf-form-title">Pattern A</div>
-      <div class="wf-form-grid three">
-        <div class="wf-field"><label>Shift 1 Start</label><input class="wf-input" placeholder="04:00" readonly></div>
-        <div class="wf-field"><label>Shift 1 End</label><input class="wf-input" placeholder="14:00" readonly></div>
-        <div class="wf-field"><label>Gap (hard block)</label><input class="wf-input" placeholder="14:00 – 15:00 (2 hrs)" readonly></div>
-        <div class="wf-field"><label>Shift 2 Start</label><input class="wf-input" placeholder="15:00" readonly></div>
-        <div class="wf-field"><label>Shift 2 End</label><input class="wf-input" placeholder="01:00" readonly></div>
-        <div class="wf-field"><label>Effective Date</label><input class="wf-input" placeholder="2026-06-01" readonly></div>
+      <div class="wf-form-title">New Pattern</div>
+
+      <!-- Pattern name + hub + effective date -->
+      <div class="wf-form-grid three" style="margin-bottom:14px">
+        <div class="wf-field"><label>Pattern Name</label><input class="wf-input" placeholder="e.g. Pattern D"></div>
+        <div class="wf-field"><label>Hub Applicability</label><select class="wf-select"><option>All Hubs</option><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
+        <div class="wf-field"><label>Effective Date</label><input class="wf-input" placeholder="YYYY-MM-DD"></div>
+      </div>
+
+      <!-- Shift rows container -->
+      <div id="shift-rows" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+
+        <!-- Shift row 1 (non-removable) -->
+        <div class="shift-row" style="display:grid;grid-template-columns:80px 1fr 1fr 32px;gap:8px;align-items:end">
+          <div class="wf-field"><label>Shift</label><input class="wf-input" value="Shift 1" readonly style="background:#F0EEF8;font-weight:600;color:var(--s3-dark)"></div>
+          <div class="wf-field"><label>Start Time</label><input class="wf-input" placeholder="04:00"></div>
+          <div class="wf-field"><label>End Time</label><input class="wf-input" placeholder="14:00"></div>
+          <div style="height:32px"></div><!-- spacer, no remove on first row -->
+        </div>
+
+        <!-- Shift row 2 -->
+        <div class="shift-row" style="display:grid;grid-template-columns:80px 1fr 1fr 32px;gap:8px;align-items:end">
+          <div class="wf-field"><label>&nbsp;</label><input class="wf-input" value="Shift 2" readonly style="background:#F0EEF8;font-weight:600;color:var(--s3-dark)"></div>
+          <div class="wf-field"><label>&nbsp;</label><input class="wf-input" placeholder="15:00"></div>
+          <div class="wf-field"><label>&nbsp;</label><input class="wf-input" placeholder="01:00"></div>
+          <button onclick="removeShiftRow(this)" style="height:32px;width:32px;border-radius:6px;border:1px solid #D5D2E8;background:#fff;color:var(--muted);font-size:14px;cursor:pointer;flex-shrink:0;align-self:end">×</button>
+        </div>
+
+      </div>
+
+      <!-- Add shift + form actions -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <button onclick="addShiftRow()" class="wf-btn ghost" style="font-size:11px">+ Add Shift</button>
+        <div style="display:flex;gap:8px">
+          <button class="wf-btn secondary" onclick="document.getElementById('pattern-form-wrap').style.display='none'">Cancel</button>
+          <button class="wf-btn secondary">Save as Draft</button>
+          <button class="wf-btn primary">Activate Pattern</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- DRIVER DRILL-DOWN -->
   <div class="wf-wrap">
     <div class="wf-label">On-press: driver drill-down</div>
     <table class="wf-table">
@@ -468,6 +563,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </table>
   </div>
 </div>
+
+<script>
+(function(){
+  var shiftCount = 2;
+
+  window.addShiftRow = function(){
+    shiftCount++;
+    var container = document.getElementById('shift-rows');
+    var row = document.createElement('div');
+    row.className = 'shift-row';
+    row.style.cssText = 'display:grid;grid-template-columns:80px 1fr 1fr 32px;gap:8px;align-items:end';
+    row.innerHTML =
+      '<div class="wf-field"><label>&nbsp;</label><input class="wf-input" value="Shift '+shiftCount+'" readonly style="background:#F0EEF8;font-weight:600;color:var(--s3-dark)"></div>'+
+      '<div class="wf-field"><label>&nbsp;</label><input class="wf-input" placeholder="HH:MM"></div>'+
+      '<div class="wf-field"><label>&nbsp;</label><input class="wf-input" placeholder="HH:MM"></div>'+
+      '<button onclick="removeShiftRow(this)" style="height:32px;width:32px;border-radius:6px;border:1px solid #D5D2E8;background:#fff;color:var(--muted);font-size:14px;cursor:pointer;flex-shrink:0;align-self:end">×</button>';
+    container.appendChild(row);
+    renumberShiftRows();
+  };
+
+  window.removeShiftRow = function(btn){
+    var row = btn.closest('.shift-row');
+    if(row) row.remove();
+    shiftCount--;
+    renumberShiftRows();
+  };
+
+  function renumberShiftRows(){
+    var rows = document.querySelectorAll('#shift-rows .shift-row');
+    rows.forEach(function(r, i){
+      var label = r.querySelector('input[readonly]');
+      if(label) label.value = 'Shift '+(i+1);
+    });
+    shiftCount = rows.length;
+  }
+})();
+</script>
 
 <!-- ═══════ AREAS ═══════ -->
 <div id="mod-areas" class="module">
