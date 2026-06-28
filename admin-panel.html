@@ -221,9 +221,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <table class="wf-table">
       <thead><tr><th>Hub Name</th><th>City</th><th>Lat / Long</th><th>Radius</th><th>Capacity</th><th>Active Duties</th><th>Services</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>
-        <tr><td><strong>Cairo HQ</strong></td><td>Cairo</td><td>30.0444, 31.2357</td><td>500 m</td><td>40</td><td>28</td><td>Wash · Maintenance</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></span></td></tr>
-        <tr><td><strong>Gouna Terminal</strong></td><td>Gouna</td><td>27.3947, 33.6773</td><td>300 m</td><td>12</td><td>7</td><td>Wash</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></td></tr>
-        <tr><td><strong>Alex North</strong></td><td>Alexandria</td><td>31.2001, 29.9187</td><td>400 m</td><td>18</td><td>0</td><td>—</td><td><span class="wf-status open">● Setup</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span></td></tr>
+        <tr><td><strong>Cairo HQ</strong></td><td>Cairo</td><td>30.0444, 31.2357</td><td>500 m</td><td>40</td><td>28</td><td>Wash · Maintenance</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
+        <tr><td><strong>Gouna Terminal</strong></td><td>Gouna</td><td>27.3947, 33.6773</td><td>300 m</td><td>12</td><td>7</td><td>Wash</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
+        <tr><td><strong>Alex North</strong></td><td>Alexandria</td><td>31.2001, 29.9187</td><td>400 m</td><td>18</td><td>0</td><td>—</td><td><span class="wf-status open">● Setup</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -231,6 +231,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="wf-wrap">
     <div class="wf-label">Add / Edit hub</div>
     <div class="wf-map"><span class="wf-map-label">🗺 Map — click to place hub centre + draw radius</span></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="wf-btn secondary">⬆ Upload KML</button>
+      <span style="font-size:11px;color:var(--muted)">Import hub centre and boundary from a <strong>.kml</strong> file, or place it on the map above.</span>
+    </div>
     <div class="wf-form">
       <div class="wf-form-title">Hub details</div>
       <div class="wf-form-grid three">
@@ -248,6 +252,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         </div></div>
       </div>
       <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Hub</button></div>
+    </div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">On-press: View — status, lifecycle &amp; log</div>
+    <div class="wf-form">
+      <div class="wf-form-title">Status &amp; lifecycle</div>
+      <div class="wf-form-grid">
+        <div class="wf-field"><label>Status</label><select class="wf-select"><option>Active</option><option>Inactive</option></select></div>
+        <div class="wf-field"><label>Reason <span style="font-weight:400;text-transform:none;letter-spacing:0">(required when Inactive)</span></label><select class="wf-select"><option>Select reason…</option><option>Under maintenance</option><option>Capacity reallocated</option><option>Temporarily closed</option><option>Permanently closed</option><option>Other</option></select></div>
+        <div class="wf-field full"><label>Note</label><input class="wf-input" placeholder="Optional context for the status change" readonly></div>
+      </div>
+      <div class="wf-form-footer" style="justify-content:space-between">
+        <button class="wf-btn ghost" style="color:var(--s5-dark);border-color:var(--s5-border)">🗑 Delete Hub</button>
+        <div style="display:flex;gap:8px"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Status</button></div>
+      </div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Activity log</div>
+      <table class="wf-table">
+        <thead><tr><th>Date</th><th>Action</th><th>By</th><th>Reason / Note</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-12 09:14</td><td><span class="wf-status active">● Activated</span></td><td>Aya F.</td><td>Hub opened for duties</td></tr>
+          <tr><td>2026-05-30 16:02</td><td><span class="wf-status inactive">● Set Inactive</span></td><td>Kholoud</td><td>Under maintenance — wash bay rebuild</td></tr>
+          <tr><td>2026-05-28 11:40</td><td>Capacity edited</td><td>Aya F.</td><td>40 → 36 duties</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -279,9 +310,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <table class="wf-table">
       <thead><tr><th>Asset ID</th><th>Plate</th><th>Category</th><th>Make / Model / Year</th><th>Engine</th><th>Hub</th><th>Tags</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>
-        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0041</span></td><td>A·BC·123</td><td>E-Class</td><td>Mercedes E-Class 2023</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">Premium Fleet</span><span class="wf-tag">Airport Permitted</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
-        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0042</span></td><td>D·EF·456</td><td>E-Cab</td><td>Toyota Camry 2022</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
-        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0043</span></td><td>G·HI·789</td><td>MB Van</td><td>Mercedes Vito 2023</td><td>ICE</td><td>Gouna Terminal</td><td><span class="wf-tag">Wheelchair Accessible</span><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0041</span></td><td>A·BC·123</td><td>E-Class</td><td>Mercedes E-Class 2023</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">Premium Fleet</span><span class="wf-tag">Airport Permitted</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0042</span></td><td>D·EF·456</td><td>E-Cab</td><td>Toyota Camry 2022</td><td>ICE</td><td>Cairo HQ</td><td><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
+        <tr><td><span style="font-family:'DM Mono',monospace;font-size:10px">VH-0043</span></td><td>G·HI·789</td><td>MB Van</td><td>Mercedes Vito 2023</td><td>ICE</td><td>Gouna Terminal</td><td><span class="wf-tag">Wheelchair Accessible</span><span class="wf-tag">City-to-City</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -302,6 +333,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="wf-field"><label>Color</label><input class="wf-input" placeholder="Black" readonly></div>
         <div class="wf-field"><label>Passenger Capacity</label><input class="wf-input" placeholder="4" readonly></div>
         <div class="wf-field"><label>Hub Assignment</label><select class="wf-select"><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
+        <div class="wf-field"><label>Allocated Pattern</label><select class="wf-select"><option>Pattern A</option><option>Pattern B</option><option>Pattern C</option></select></div>
         <div class="wf-field"><label>Upholstery</label><select class="wf-select"><option>Leather</option><option>Fabric</option></select></div>
       </div>
     </div>
@@ -330,6 +362,73 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <div class="wf-form-footer" style="justify-content:flex-end;display:flex;gap:8px;padding:0 0 4px"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Vehicle</button></div>
   </div>
 
+  <div class="wf-wrap">
+    <div class="wf-label">On-press: View — vehicle 360</div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Integrations — Octane / Infinity</div>
+      <div class="wf-detail" style="margin-bottom:0">
+        <div class="wf-detail-card"><h4>Octane</h4>
+          <div class="wf-detail-row"><span class="wf-detail-key">Fuel / charging spend (MTD)</span><span class="wf-detail-val">4,820 EGP</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Last transaction</span><span class="wf-detail-val">2026-06-26</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Card status</span><span class="wf-detail-val">Active</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Sync</span><span class="wf-detail-val">Auto · read-only</span></div>
+        </div>
+        <div class="wf-detail-card"><h4>Infinity</h4>
+          <div class="wf-detail-row"><span class="wf-detail-key">Odometer</span><span class="wf-detail-val">82,140 km</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Last service</span><span class="wf-detail-val">2026-05-18</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Next service due</span><span class="wf-detail-val">85,000 km</span></div>
+          <div class="wf-detail-row"><span class="wf-detail-key">Sync</span><span class="wf-detail-val">Auto · read-only</span></div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">Pulled from Octane / Infinity. Read-only in the admin panel; managed in the source system.</div>
+    </div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Documents &amp; status</div>
+      <table class="wf-table">
+        <thead><tr><th>Document</th><th>Number / Ref</th><th>Issued</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td>Vehicle License (Rukhsa)</td><td>RK-884512</td><td>2024-08-01</td><td>2026-08-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Insurance</td><td>INS-22190</td><td>2025-07-15</td><td>2026-07-15</td><td><span class="wf-status open">● Expiring · 17d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Annual Inspection</td><td>INSP-4471</td><td>2025-09-10</td><td>2026-09-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Operating Permit</td><td>OP-1029</td><td>2024-06-01</td><td>2026-06-01</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)">
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status active">● Valid</span> more than 30 days left</span>
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status open">● Expiring</span> alert fires at 30 days before expiry</span>
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status blocked">● Expired</span> past expiry date</span>
+        <button class="wf-btn secondary" style="margin-left:auto">⬆ Upload Document</button>
+      </div>
+    </div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Status &amp; lifecycle</div>
+      <div class="wf-form-grid">
+        <div class="wf-field"><label>Status</label><select class="wf-select"><option>Active</option><option>Inactive</option></select></div>
+        <div class="wf-field"><label>Reason <span style="font-weight:400;text-transform:none;letter-spacing:0">(required when Inactive)</span></label><select class="wf-select"><option>Select reason…</option><option>Under maintenance</option><option>Accident / repair</option><option>Document expired</option><option>Sold / retired</option><option>Other</option></select></div>
+        <div class="wf-field full"><label>Note</label><input class="wf-input" placeholder="Optional context for the status change" readonly></div>
+      </div>
+      <div class="wf-form-footer" style="justify-content:space-between">
+        <button class="wf-btn ghost" style="color:var(--s5-dark);border-color:var(--s5-border)">🗑 Delete Vehicle</button>
+        <div style="display:flex;gap:8px"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Status</button></div>
+      </div>
+    </div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Activity log</div>
+      <table class="wf-table">
+        <thead><tr><th>Date</th><th>Action</th><th>By</th><th>Reason / Note</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-20 10:05</td><td><span class="wf-status inactive">● Set Inactive</span></td><td>Kholoud</td><td>Accident / repair — rear panel</td></tr>
+          <tr><td>2026-06-01 08:30</td><td>Document expired</td><td>System</td><td>Operating Permit OP-1029</td></tr>
+          <tr><td>2026-05-15 14:22</td><td>Pattern reallocated</td><td>Aya F.</td><td>Pattern B → Pattern A</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="mod-section">
     <div class="mod-section-title">Open scope items</div>
     <div class="open-item"><span class="open-item-badge tbd">To be defined</span><div><div class="open-item-text">Document types for vehicles</div><div class="open-item-detail">Upload rules, expiry logic, and required document types not yet defined.</div></div></div>
@@ -344,7 +443,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="page-header">
     <div class="page-eyebrow">Fleet · Drivers</div>
     <div class="page-title">Drivers</div>
-    <div class="page-sub">Manage driver profiles, hub assignments, shift preferences, tags, and traits. Tags control which demand segments a driver is eligible for. Traits are verifiable attributes checked by the dispatch hard filter.</div>
+    <div class="page-sub">Manage driver profiles, hub assignments, shift preferences, tags, and traits. Tags are segmentation labels used for grouping and filtering — they do not impact dispatch. Traits are verifiable attributes checked by the dispatch hard filter.</div>
   </div>
 
   <div class="wf-wrap">
@@ -352,16 +451,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <div class="wf-toolbar">
       <div class="wf-search">🔍 Search by name, SAP ID, phone...</div>
       <select class="wf-filter"><option>All hubs</option><option>Cairo HQ</option><option>Gouna Terminal</option></select>
-      <select class="wf-filter"><option>All statuses</option><option>Active</option><option>On duty</option><option>Off shift</option><option>Blocked</option></select>
+      <select class="wf-filter"><option>All statuses</option><option>Onboarding</option><option>Active</option><option>Hold</option><option>Deactivated</option></select>
       <button class="wf-btn ghost">Export</button>
       <button class="wf-btn primary">+ Add Driver</button>
     </div>
     <table class="wf-table">
       <thead><tr><th>Name</th><th>SAP ID</th><th>Hub</th><th>Rating</th><th>Tags</th><th>Shift Pref.</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>
-        <tr><td><strong>Mohamed A.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1042</span></td><td>Cairo HQ</td><td>⭐ 4.8</td><td><span class="wf-tag">Airport Certified</span><span class="wf-tag">Premium</span></td><td>Shift 1</td><td><span class="wf-status active">● On Duty</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
-        <tr><td><strong>Karim M.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1043</span></td><td>Cairo HQ</td><td>⭐ 4.6</td><td><span class="wf-tag">City-to-City</span></td><td>Either</td><td><span class="wf-status inactive">● Off Shift</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
-        <tr><td><strong>Ahmed S.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1044</span></td><td>Gouna Terminal</td><td>⭐ 4.9</td><td><span class="wf-tag">Premium</span><span class="wf-tag">VIP Driver</span></td><td>Shift 2</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><strong>Mohamed A.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1042</span></td><td>Cairo HQ</td><td>⭐ 4.8</td><td><span class="wf-tag">Airport Certified</span><span class="wf-tag">Premium</span></td><td>Shift 1</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><strong>Karim M.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1043</span></td><td>Cairo HQ</td><td>⭐ 4.6</td><td><span class="wf-tag">City-to-City</span></td><td>Either</td><td><span class="wf-status open">● Hold</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span></td></tr>
+        <tr><td><strong>Ahmed S.</strong></td><td><span style="font-family:'DM Mono',monospace;font-size:10px">SAP-1044</span></td><td>Gouna Terminal</td><td>⭐ 4.9</td><td><span class="wf-tag">Premium</span><span class="wf-tag">VIP Driver</span></td><td>Shift 2</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Traits</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -371,7 +470,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <div class="wf-form">
       <div class="wf-form-title">Personal & professional</div>
       <div class="wf-form-grid three">
-        <div class="wf-field"><label>Full Name</label><input class="wf-input" placeholder="Mohamed Ahmed" readonly></div>
+        <div class="wf-field"><label>First Name</label><input class="wf-input" placeholder="Mohamed" readonly></div>
+        <div class="wf-field"><label>Last Name</label><input class="wf-input" placeholder="Ahmed" readonly></div>
         <div class="wf-field"><label>SAP ID</label><input class="wf-input" placeholder="SAP-1042" readonly></div>
         <div class="wf-field"><label>Phone Number</label><input class="wf-input" placeholder="+20 1XX XXX XXXX" readonly></div>
         <div class="wf-field"><label>Hub</label><select class="wf-select"><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
@@ -380,12 +480,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="wf-field"><label>Recurring Day Off</label><select class="wf-select"><option>Friday</option><option>Saturday</option><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option></select></div>
         <div class="wf-field"><label>Languages</label><input class="wf-input" placeholder="Arabic, English" readonly></div>
         <div class="wf-field"><label>Rating</label><input class="wf-input" placeholder="4.8 (system-calculated)" readonly></div>
-        <div class="wf-field"><label>Certification</label><input class="wf-input" placeholder="e.g. Defensive Driving" readonly></div>
-        <div class="wf-field"><label>Status</label><select class="wf-select"><option>Active</option><option>Inactive</option><option>Blocked</option></select></div>
+        <div class="wf-field"><label>Status</label><select class="wf-select"><option>Onboarding</option><option>Active</option><option>Hold</option><option>Deactivated</option></select></div>
       </div>
     </div>
     <div class="wf-form">
-      <div class="wf-form-title">Tags — demand segment eligibility</div>
+      <div class="wf-form-title">Tags — segmentation (no dispatch impact)</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
         <span class="wf-tag">✓ Airport Certified</span>
         <span class="wf-tag">✓ Premium</span>
@@ -403,9 +502,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <span class="wf-trait">permit_expiry = 2027-03</span>
         <span class="wf-trait">city_to_city_eligible = true</span>
         <span class="wf-trait">languages = [AR, EN]</span>
+        <span class="wf-trait">certifications = [Defensive Driving]</span>
       </div>
     </div>
     <div class="wf-form-footer" style="display:flex;gap:8px;justify-content:flex-end"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Driver</button></div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">On-press: View — documents &amp; status</div>
+    <div class="wf-form">
+      <div class="wf-form-title">Documents &amp; status</div>
+      <table class="wf-table">
+        <thead><tr><th>Document</th><th>Number / Ref</th><th>Issued</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td>Driving License</td><td>DL-7741209</td><td>2023-04-10</td><td>2028-04-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Airport Permit</td><td>AP-3382</td><td>2024-03-01</td><td>2026-07-12</td><td><span class="wf-status open">● Expiring · 14d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Medical Certificate</td><td>MED-9920</td><td>2025-09-01</td><td>2026-09-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Police Clearance</td><td>PC-1185</td><td>2024-05-20</td><td>2026-05-20</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Defensive Driving Cert.</td><td>DDC-204</td><td>2025-02-15</td><td>2027-02-15</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)">
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status active">● Valid</span> more than 30 days left</span>
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status open">● Expiring</span> alert fires at 30 days before expiry</span>
+        <span style="display:flex;align-items:center;gap:5px"><span class="wf-status blocked">● Expired</span> past expiry date</span>
+        <button class="wf-btn secondary" style="margin-left:auto">⬆ Upload Document</button>
+      </div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Documents log</div>
+      <table class="wf-table">
+        <thead><tr><th>Date</th><th>Document</th><th>Action</th><th>By</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-26 11:30</td><td>Airport Permit</td><td>Expiry alert raised</td><td>System</td><td>30-day window reached</td></tr>
+          <tr><td>2026-05-21 09:10</td><td>Police Clearance</td><td><span class="wf-status blocked">● Expired</span></td><td>System</td><td>Renewal pending</td></tr>
+          <tr><td>2025-09-01 14:45</td><td>Medical Certificate</td><td>Replaced</td><td>Aya F.</td><td>New cert uploaded</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="mod-section">
@@ -567,10 +701,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="wf-wrap">
     <div class="wf-label">On-press: driver drill-down</div>
     <table class="wf-table">
-      <thead><tr><th>Driver</th><th>Vehicle</th><th>Shift</th><th>Day Off</th><th>Actions</th><th>Price</th></tr></thead>
+      <thead><tr><th>Driver</th><th>Vehicle</th><th>Shift</th><th>Day Off</th><th>Actions</th></tr></thead>
       <tbody>
-        <tr><td>Mohamed A.</td><td>A·BC·123</td><td>Friday / Shift 1</td><td>Friday</td><td class="wf-actions"><span class="wf-action">Edit</span></td><td>—</td></tr>
-        <tr><td>Karim M.</td><td>D·EF·456</td><td>Tuesday / Shift 2</td><td>Sunday</td><td class="wf-actions"><span class="wf-action">Edit</span></td><td>—</td></tr>
+        <tr><td>Mohamed A.</td><td>A·BC·123</td><td>Friday / Shift 1</td><td>Friday</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td>Karim M.</td><td>D·EF·456</td><td>Tuesday / Shift 2</td><td>Sunday</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -653,6 +787,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="wf-search">🔍 Search areas...</div>
       <select class="wf-filter"><option>All governorates</option><option>Cairo</option><option>Giza</option><option>Alexandria</option><option>Red Sea</option></select>
       <button class="wf-btn secondary">Draw Polygon</button>
+      <button class="wf-btn secondary">⬆ Upload KML</button>
       <button class="wf-btn primary">+ Add Area</button>
     </div>
     <div class="wf-map"><span class="wf-map-label">🗺 Map — click + long press or draw polyline to define area boundary</span></div>
@@ -672,7 +807,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="wf-field"><label>Area Name</label><input class="wf-input" placeholder="e.g. Cairo Downtown" readonly></div>
         <div class="wf-field"><label>Governorate</label><select class="wf-select"><option>Cairo</option><option>Giza</option><option>Alexandria</option><option>Red Sea</option></select></div>
         <div class="wf-field full"><label>Tags (metadata)</label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><span class="wf-tag">✓ In-City</span><span class="wf-tag" style="opacity:.45">+ Airport Zone</span><span class="wf-tag" style="opacity:.45">+ City-to-City</span><span class="wf-tag" style="opacity:.45">+ Destination</span></div></div>
-        <div class="wf-field full"><label>Boundary</label><div class="wf-map" style="height:120px"><span class="wf-map-label">Click to draw boundary on map</span></div></div>
+        <div class="wf-field full"><label>Boundary</label><div class="wf-map" style="height:120px"><span class="wf-map-label">Click to draw boundary on map</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <button class="wf-btn secondary">⬆ Upload KML</button>
+            <span style="font-size:11px;color:var(--muted)">Import the area boundary from a <strong>.kml</strong> file, or draw it on the map above.</span>
+          </div>
+        </div>
       </div>
       <div class="wf-form-footer"><button class="wf-btn secondary">Cancel</button><button class="wf-btn primary">Save Area</button></div>
     </div>
@@ -920,6 +1060,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <tr><td><span class="wf-trait">permit_expiry</span></td><td>Driver · Vehicle</td><td><span style="font-size:10px;background:#E6F1FB;color:#0C447C;padding:1px 7px;border-radius:5px;font-weight:600">date</span></td><td>2027-03-01</td><td>Expiry check at roster lock</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
         <tr><td><span class="wf-trait">city_to_city_eligible</span></td><td>Driver</td><td><span style="font-size:10px;background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:5px;font-weight:600">boolean</span></td><td>true / false</td><td>Hard filter — C2C trips</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
         <tr><td><span class="wf-trait">languages</span></td><td>Driver</td><td><span style="font-size:10px;background:#FEF3C7;color:#5A4300;padding:1px 7px;border-radius:5px;font-weight:600">multi-select</span></td><td>[Arabic, English]</td><td>Personalization / rider match</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
+        <tr><td><span class="wf-trait">certifications</span></td><td>Driver</td><td><span style="font-size:10px;background:#FEF3C7;color:#5A4300;padding:1px 7px;border-radius:5px;font-weight:600">multi-select</span></td><td>[Defensive Driving]</td><td>Eligibility / ops review</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
         <tr><td><span class="wf-trait">has_ramp</span></td><td>Vehicle</td><td><span style="font-size:10px;background:#E1F5EE;color:#085041;padding:1px 7px;border-radius:5px;font-weight:600">boolean</span></td><td>true / false</td><td>Hard filter — accessibility</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
         <tr><td><span class="wf-trait">passenger_capacity</span></td><td>Vehicle</td><td><span style="font-size:10px;background:#F3EFFE;color:#5B21B6;padding:1px 7px;border-radius:5px;font-weight:600">numeric</span></td><td>4</td><td>Trip size filter</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
         <tr><td><span class="wf-trait">total_rides</span></td><td>Driver · Customer</td><td><span style="font-size:10px;background:#F3EFFE;color:#5B21B6;padding:1px 7px;border-radius:5px;font-weight:600">numeric</span></td><td>3420</td><td>Personalization / segmentation</td><td class="wf-actions"><span class="wf-action">Edit</span></td></tr>
