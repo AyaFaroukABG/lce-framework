@@ -175,7 +175,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   </div>
   <div>
     <div style="font-size:15px;font-weight:700;color:var(--text)">Admin Panel</div>
-    <div style="font-size:11px;color:var(--muted)">Hub Locations · Vehicles · Drivers · Shifts · Areas · Pricing · Service Types · Customers · Tags · Traits</div>
+    <div style="font-size:11px;color:var(--muted)">Hub Locations · Vehicles · Drivers · Shifts · Areas · Pricing · Service Types · Customers · Vehicle Data · Tags · Traits</div>
   </div>
 </div>
 <div class="shell">
@@ -194,7 +194,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <button class="sidebar-item" onclick="showModule('servicetypes')"><span class="sidebar-dot" style="background:#185FA5"></span>Service Types</button>
   <div class="sidebar-section">Customers</div>
   <button class="sidebar-item" onclick="showModule('customers')"><span class="sidebar-dot" style="background:#0F6E56"></span>Customer Management</button>
-  <div class="sidebar-section">Segmentation</div>
+  <div class="sidebar-section">Master Data</div>
+  <button class="sidebar-item" onclick="showModule('vehicledata')"><span class="sidebar-dot" style="background:#0F6E56"></span>Vehicle Data</button>
   <button class="sidebar-item" onclick="showModule('tags')"><span class="sidebar-dot" style="background:#7C3AED"></span>Tag Library</button>
   <button class="sidebar-item" onclick="showModule('traits')"><span class="sidebar-dot" style="background:#7A5C00"></span>Trait Definitions</button>
 </aside>
@@ -207,7 +208,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <div class="page-header">
     <div class="page-eyebrow">Fleet · Hub Locations</div>
     <div class="page-title">Hub Locations</div>
-    <div class="page-sub">Define and manage physical hub locations. Each hub has a geofenced radius, assigned fleet, and service capacity. Hubs are the matching key — drivers and vehicles from the same hub are paired into duties.</div>
+    <div class="page-sub">Define and manage physical hub locations. Each hub has a geofenced radius, assigned fleet, and a vehicle capacity. Hubs are the matching key — drivers and vehicles from the same hub are paired into duties.</div>
   </div>
 
   <div class="wf-wrap">
@@ -219,7 +220,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <button class="wf-btn primary">+ Add Hub</button>
     </div>
     <table class="wf-table">
-      <thead><tr><th>Hub Name</th><th>City</th><th>Lat / Long</th><th>Radius</th><th>Capacity</th><th>Active Duties</th><th>Services</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Hub Name</th><th>City</th><th>Lat / Long</th><th>Radius</th><th>Capacity (vehicles)</th><th>Duties Allocated <span style="text-transform:none;font-weight:400">(calc)</span></th><th>Services</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>
         <tr><td><strong>Cairo HQ</strong></td><td>Cairo</td><td>30.0444, 31.2357</td><td>500 m</td><td>40</td><td>28</td><td>Wash · Maintenance</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
         <tr><td><strong>Gouna Terminal</strong></td><td>Gouna</td><td>27.3947, 33.6773</td><td>300 m</td><td>12</td><td>7</td><td>Wash</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">View</span><span class="wf-action">Status</span><span class="wf-action">Delete</span></td></tr>
@@ -241,9 +242,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="wf-field"><label>Hub Name</label><input class="wf-input" placeholder="e.g. Cairo HQ" readonly></div>
         <div class="wf-field"><label>City</label><select class="wf-select"><option>Cairo</option><option>Alexandria</option><option>Gouna</option></select></div>
         <div class="wf-field"><label>Radius (metres)</label><input class="wf-input" placeholder="500" readonly></div>
-        <div class="wf-field"><label>Latitude</label><input class="wf-input" placeholder="30.0444" readonly></div>
-        <div class="wf-field"><label>Longitude</label><input class="wf-input" placeholder="31.2357" readonly></div>
-        <div class="wf-field"><label>Capacity (duties)</label><input class="wf-input" placeholder="40" readonly></div>
+        <div class="wf-field"><label>Capacity (vehicles)</label><input class="wf-input" placeholder="40" readonly></div>
+        <div class="wf-field"><label>Duties Allocated <span style="font-weight:400;text-transform:none;letter-spacing:0">(calculated)</span></label><input class="wf-input" placeholder="28 — derived from roster allocations" readonly style="background:#F0EEF8;color:var(--muted)"></div>
         <div class="wf-field full"><label>Services available</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
           <label class="wf-toggle"><div class="wf-toggle-box on"><div class="wf-toggle-thumb"></div></div> Car Wash</label>
           <label class="wf-toggle"><div class="wf-toggle-box on"><div class="wf-toggle-thumb"></div></div> Maintenance Bay</label>
@@ -276,7 +276,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <tbody>
           <tr><td>2026-06-12 09:14</td><td><span class="wf-status active">● Activated</span></td><td>Aya F.</td><td>Hub opened for duties</td></tr>
           <tr><td>2026-05-30 16:02</td><td><span class="wf-status inactive">● Set Inactive</span></td><td>Kholoud</td><td>Under maintenance — wash bay rebuild</td></tr>
-          <tr><td>2026-05-28 11:40</td><td>Capacity edited</td><td>Aya F.</td><td>40 → 36 duties</td></tr>
+          <tr><td>2026-05-28 11:40</td><td>Capacity edited</td><td>Aya F.</td><td>40 → 36 vehicles</td></tr>
         </tbody>
       </table>
     </div>
@@ -325,12 +325,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <div class="wf-field"><label>Asset ID (SAP)</label><input class="wf-input" placeholder="VH-0041" readonly></div>
         <div class="wf-field"><label>License Plate</label><input class="wf-input" placeholder="A·BC·123" readonly></div>
         <div class="wf-field"><label>VIN</label><input class="wf-input" placeholder="WDB2130001X123456" readonly></div>
-        <div class="wf-field"><label>Make</label><input class="wf-input" placeholder="Mercedes-Benz" readonly></div>
-        <div class="wf-field"><label>Model</label><input class="wf-input" placeholder="E-Class" readonly></div>
+        <div class="wf-field"><label>Make</label><select class="wf-select"><option>Mercedes-Benz</option><option>Toyota</option><option>BMW</option></select></div>
+        <div class="wf-field"><label>Model <span style="font-weight:400;text-transform:none;letter-spacing:0">(filters by Make)</span></label><select class="wf-select"><option>E-Class</option><option>S-Class</option><option>Vito</option></select></div>
         <div class="wf-field"><label>Year</label><input class="wf-input" placeholder="2023" readonly></div>
         <div class="wf-field"><label>Category</label><select class="wf-select"><option>E-Cab</option><option selected>E-Class</option><option>S-Class</option><option>Comfort</option><option>MB Van</option><option>Compact</option></select></div>
         <div class="wf-field"><label>Engine Type</label><select class="wf-select"><option selected>ICE</option><option>EV</option></select></div>
-        <div class="wf-field"><label>Color</label><input class="wf-input" placeholder="Black" readonly></div>
+        <div class="wf-field"><label>Color</label><select class="wf-select"><option>Black</option><option>White</option><option>Silver</option><option>Grey</option><option>Navy</option></select></div>
         <div class="wf-field"><label>Passenger Capacity</label><input class="wf-input" placeholder="4" readonly></div>
         <div class="wf-field"><label>Hub Assignment</label><select class="wf-select"><option>Cairo HQ</option><option>Gouna Terminal</option></select></div>
         <div class="wf-field"><label>Allocated Pattern</label><select class="wf-select"><option>Pattern A</option><option>Pattern B</option><option>Pattern C</option></select></div>
@@ -389,10 +389,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <table class="wf-table">
         <thead><tr><th>Document</th><th>Number / Ref</th><th>Issued</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
-          <tr><td>Vehicle License (Rukhsa)</td><td>RK-884512</td><td>2024-08-01</td><td>2026-08-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Insurance</td><td>INS-22190</td><td>2025-07-15</td><td>2026-07-15</td><td><span class="wf-status open">● Expiring · 17d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Annual Inspection</td><td>INSP-4471</td><td>2025-09-10</td><td>2026-09-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Operating Permit</td><td>OP-1029</td><td>2024-06-01</td><td>2026-06-01</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Vehicle License (Rukhsa)</td><td>RK-884512</td><td>2024-08-01</td><td>2026-08-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Insurance</td><td>INS-22190</td><td>2025-07-15</td><td>2026-07-15</td><td><span class="wf-status open">● Expiring · 17d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Annual Inspection</td><td>INSP-4471</td><td>2025-09-10</td><td>2026-09-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Operating Permit</td><td>OP-1029</td><td>2024-06-01</td><td>2026-06-01</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
         </tbody>
       </table>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)">
@@ -401,6 +401,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <span style="display:flex;align-items:center;gap:5px"><span class="wf-status blocked">● Expired</span> past expiry date</span>
         <button class="wf-btn secondary" style="margin-left:auto">⬆ Upload Document</button>
       </div>
+      <div style="font-size:11px;color:var(--s4-dark);margin-top:8px;background:#E1F5EE;border:1px solid var(--s4-border);border-radius:6px;padding:7px 10px">Replacing a document supersedes the current version but retains every previous version. Documents are never deleted.</div>
+    </div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Document history — retained versions</div>
+      <table class="wf-table">
+        <thead><tr><th>Document</th><th>Version</th><th>Number / Ref</th><th>Valid From</th><th>Valid To</th><th>Status</th><th>File</th></tr></thead>
+        <tbody>
+          <tr><td>Vehicle License (Rukhsa)</td><td>v2</td><td>RK-884512</td><td>2024-08-01</td><td>2026-08-01</td><td><span class="wf-status active">● Current</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Vehicle License (Rukhsa)</td><td>v1</td><td>RK-770233</td><td>2022-08-01</td><td>2024-08-01</td><td><span class="wf-status inactive">● Superseded · retained</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Insurance</td><td>v3</td><td>INS-22190</td><td>2025-07-15</td><td>2026-07-15</td><td><span class="wf-status active">● Current</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Insurance</td><td>v2</td><td>INS-21044</td><td>2024-07-10</td><td>2025-07-10</td><td><span class="wf-status inactive">● Superseded · retained</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Insurance</td><td>v1</td><td>INS-19888</td><td>2023-07-02</td><td>2024-07-02</td><td><span class="wf-status inactive">● Superseded · retained</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="wf-form">
@@ -515,11 +530,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <table class="wf-table">
         <thead><tr><th>Document</th><th>Number / Ref</th><th>Issued</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
-          <tr><td>Driving License</td><td>DL-7741209</td><td>2023-04-10</td><td>2028-04-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Airport Permit</td><td>AP-3382</td><td>2024-03-01</td><td>2026-07-12</td><td><span class="wf-status open">● Expiring · 14d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Medical Certificate</td><td>MED-9920</td><td>2025-09-01</td><td>2026-09-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Police Clearance</td><td>PC-1185</td><td>2024-05-20</td><td>2026-05-20</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
-          <tr><td>Defensive Driving Cert.</td><td>DDC-204</td><td>2025-02-15</td><td>2027-02-15</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span></td></tr>
+          <tr><td>Driving License</td><td>DL-7741209</td><td>2023-04-10</td><td>2028-04-10</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Airport Permit</td><td>AP-3382</td><td>2024-03-01</td><td>2026-07-12</td><td><span class="wf-status open">● Expiring · 14d</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Medical Certificate</td><td>MED-9920</td><td>2025-09-01</td><td>2026-09-01</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Police Clearance</td><td>PC-1185</td><td>2024-05-20</td><td>2026-05-20</td><td><span class="wf-status blocked">● Expired</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
+          <tr><td>Defensive Driving Cert.</td><td>DDC-204</td><td>2025-02-15</td><td>2027-02-15</td><td><span class="wf-status active">● Valid</span></td><td class="wf-actions"><span class="wf-action">View</span><span class="wf-action">Replace</span><span class="wf-action">History</span></td></tr>
         </tbody>
       </table>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)">
@@ -528,6 +543,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         <span style="display:flex;align-items:center;gap:5px"><span class="wf-status blocked">● Expired</span> past expiry date</span>
         <button class="wf-btn secondary" style="margin-left:auto">⬆ Upload Document</button>
       </div>
+      <div style="font-size:11px;color:var(--s4-dark);margin-top:8px;background:#E1F5EE;border:1px solid var(--s4-border);border-radius:6px;padding:7px 10px">Replacing a document supersedes the current version but retains every previous version. Documents are never deleted.</div>
+    </div>
+    <div class="wf-form">
+      <div class="wf-form-title">Document history — retained versions</div>
+      <table class="wf-table">
+        <thead><tr><th>Document</th><th>Version</th><th>Number / Ref</th><th>Valid From</th><th>Valid To</th><th>Status</th><th>File</th></tr></thead>
+        <tbody>
+          <tr><td>Medical Certificate</td><td>v2</td><td>MED-9920</td><td>2025-09-01</td><td>2026-09-01</td><td><span class="wf-status active">● Current</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Medical Certificate</td><td>v1</td><td>MED-8814</td><td>2024-09-01</td><td>2025-09-01</td><td><span class="wf-status inactive">● Superseded · retained</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Airport Permit</td><td>v2</td><td>AP-3382</td><td>2024-03-01</td><td>2026-07-12</td><td><span class="wf-status active">● Current</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+          <tr><td>Airport Permit</td><td>v1</td><td>AP-2710</td><td>2022-02-15</td><td>2024-03-01</td><td><span class="wf-status inactive">● Superseded · retained</span></td><td class="wf-actions"><span class="wf-action">View</span></td></tr>
+        </tbody>
+      </table>
     </div>
     <div class="wf-form">
       <div class="wf-form-title">Documents log</div>
@@ -990,6 +1018,72 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
           <span class="wf-tag">New Customer</span>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:8px">Assigned by ops or auto-assigned by rule engine based on traits.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ VEHICLE DATA (MASTER DATA) ═══════ -->
+<div id="mod-vehicledata" class="module">
+  <div class="page-header">
+    <div class="page-eyebrow">Master Data · Vehicle Data</div>
+    <div class="page-title">Vehicle Master Data</div>
+    <div class="page-sub">Reference lists that feed the dropdowns in Vehicle Management. Managed centrally by an admin / configuration role, not as part of day-to-day vehicle entry. Editing a list here updates the matching dropdown in Add / Edit vehicle; values can be activated or retired without changing existing vehicle records.</div>
+  </div>
+
+  <div class="wf-wrap">
+    <div class="wf-label">Reference lists</div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Vehicle Categories (CarType)</div>
+      <div class="wf-toolbar">
+        <div class="wf-search">🔍 Search categories...</div>
+        <select class="wf-filter"><option>All statuses</option><option>Active</option><option>Retired</option></select>
+        <button class="wf-btn primary">+ Add Category</button>
+      </div>
+      <table class="wf-table">
+        <thead><tr><th>Category</th><th>Code</th><th>Default Capacity</th><th>Engine Allowed</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Compact</strong></td><td><span class="wf-trait">CMPT</span></td><td>4</td><td>ICE · EV</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+          <tr><td><strong>E-Cab</strong></td><td><span class="wf-trait">ECAB</span></td><td>4</td><td>ICE · EV</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+          <tr><td><strong>Comfort</strong></td><td><span class="wf-trait">CMFT</span></td><td>4</td><td>ICE · EV</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+          <tr><td><strong>E-Class</strong></td><td><span class="wf-trait">ECLS</span></td><td>4</td><td>ICE</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+          <tr><td><strong>MB Van</strong></td><td><span class="wf-trait">MBVN</span></td><td>7</td><td>ICE</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+          <tr><td><strong>S-Class</strong></td><td><span class="wf-trait">SCLS</span></td><td>4</td><td>ICE</td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">Retire</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">Default Capacity pre-fills Passenger Capacity on the vehicle form.</div>
+    </div>
+
+    <div class="wf-form">
+      <div class="wf-form-title">Makes &amp; Models</div>
+      <div class="wf-toolbar">
+        <div class="wf-search">🔍 Search makes or models...</div>
+        <button class="wf-btn primary">+ Add Make</button>
+      </div>
+      <table class="wf-table">
+        <thead><tr><th>Make</th><th>Models</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mercedes-Benz</strong></td><td><span class="wf-trait">E-Class</span><span class="wf-trait">S-Class</span><span class="wf-trait">Vito</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">+ Model</span></td></tr>
+          <tr><td><strong>Toyota</strong></td><td><span class="wf-trait">Camry</span><span class="wf-trait">Corolla</span><span class="wf-trait">Hiace</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">+ Model</span></td></tr>
+          <tr><td><strong>BMW</strong></td><td><span class="wf-trait">5 Series</span><span class="wf-trait">7 Series</span></td><td><span class="wf-status active">● Active</span></td><td class="wf-actions"><span class="wf-action">Edit</span><span class="wf-action">+ Model</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">In the vehicle form, the Model dropdown filters by the selected Make.</div>
+    </div>
+
+    <div class="wf-detail" style="margin-bottom:0">
+      <div class="wf-detail-card"><h4>Engine Types</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px"><span class="wf-trait">ICE</span><span class="wf-trait">EV</span></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px"><span class="wf-action" style="cursor:pointer">+ Add value</span></div>
+      </div>
+      <div class="wf-detail-card"><h4>Colors</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px"><span class="wf-trait">Black</span><span class="wf-trait">White</span><span class="wf-trait">Silver</span><span class="wf-trait">Grey</span><span class="wf-trait">Navy</span></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px"><span class="wf-action" style="cursor:pointer">+ Add value</span></div>
+      </div>
+      <div class="wf-detail-card"><h4>Upholstery</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px"><span class="wf-trait">Leather</span><span class="wf-trait">Fabric</span></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px"><span class="wf-action" style="cursor:pointer">+ Add value</span></div>
       </div>
     </div>
   </div>
